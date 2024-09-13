@@ -26,7 +26,7 @@ void MainWindow::init()
     //This will contain the setup of the OpenGL surface we will render into
     QSurfaceFormat format;
 
-    //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this (per 2023) - sorry!)
+    //OpenGL v 4.1 - (Ole Flatens Mac does not support higher than this - sorry!)
     //you can try other versions, but then have to update RenderWindow and Shader
     //to inherit from other than QOpenGLFunctions_4_1_Core
     //(The 3DProgramming course does not use anything from higher than 4.1, so pleas don't change it)
