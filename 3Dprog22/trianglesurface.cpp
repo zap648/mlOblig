@@ -4,10 +4,10 @@ TriangleSurface::TriangleSurface()
 {
     // Required Vertices
     //     v   x     y     z     r     g     b
-    Vertex v0{ 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    Vertex v0{ 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
     Vertex v1{ 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
     Vertex v2{ 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f};
-    Vertex v3{ 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f};
+    Vertex v3{ 0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f};
 
     // Surface quad_1/2
     mVertices.push_back(v0);
