@@ -65,24 +65,28 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
 //    mObjects.push_back(new TriangleSurface());
 
+    // Adding Plane Object to mObject
     plane = new Plane();
     plane->setPosition3D(QVector3D{2.0f, 0.0f, 2.0f});
     mObjects.push_back(plane);
 
+    // Setting up Height Map Plane and adding it to mObjects
     heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
     heightMap->setPosition3D(QVector3D{0.0f, 0.0f, 0.0f});
     mObjects.push_back(heightMap);
 
+    // Setting up Light Object and adding it to mObject
     light = new Light;
     light->setPosition3D(QVector3D{-2.5f, 2.5f, 2.5f});
     lightStrength = light->mLightStrength;
     specularStrength = light->mSpecularStrength;
     mObjects.push_back(light);
 
-    // Interactive Object
+    // Adding Interactive Object to mOjbects
     mio = new InteractiveObject("interactiveObject.txt", false);
     mObjects.push_back(mio);
 
+    // Adding Trophies to mTrophies (mObject but for trophies)
     // Trophies: tObject(x, y, z, radius)
     mTrophies.push_back(new TrophyObject(1.5f, 0.0f, -1.5f, 0.2));
 
@@ -100,12 +104,14 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     mEnemies.push_back(new EnemyObject(-1.5f, 0.0f, -1.5f, 0.2));
 
+    // Add enemy objects
     for (int i = 0; i < mEnemies.size(); i++)
     {
         mEnemies[i]->setRenderStyle(0);
         mObjects.push_back(mEnemies[i]);
     }
 
+    // Setting up the camera
     cameraEye = mio->getPosition() + QVector3D(0, 2.5f, 6.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
     cameraAt = mio->getPosition() + QVector3D(0,0.5f,0) + QVector3D( 0.0f, 0.0f,-0.1f);
