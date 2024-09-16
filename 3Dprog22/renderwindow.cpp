@@ -63,6 +63,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     xyz = new XYZ;
     mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
+    mObjects.push_back(new OctahedronBall(0));
+
 //    mObjects.push_back(new TriangleSurface());
 
     // Adding Plane Object to mObject
@@ -70,10 +72,10 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     plane->setPosition3D(QVector3D{2.0f, 0.0f, 2.0f});
     mObjects.push_back(plane);
 
-    // Setting up Height Map Plane and adding it to mObjects
-    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
-    heightMap->setPosition3D(QVector3D{0.0f, 0.0f, 0.0f});
-    mObjects.push_back(heightMap);
+    // Setting up Height Map and adding it to mObjects
+//    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
+//    heightMap->setPosition3D(QVector3D{0.0f, 0.0f, 0.0f});
+//    mObjects.push_back(heightMap);
 
     // Setting up Light Object and adding it to mObject
     light = new Light;
@@ -254,7 +256,7 @@ void RenderWindow::render()
 
     //the actual draw call(s)
     for (auto it = mObjects.begin(); it != mObjects.end(); it++)
-        if ((*it) != mio && (*it) != plane && (*it) != heightMap)
+//        if ((*it) != mio && (*it) != plane && (*it) != heightMap)
             (*it)->draw(mMatrixUniform0);
 
     // Draws all objects using phong shading
@@ -271,21 +273,21 @@ void RenderWindow::render()
     glUniform1f(mLightStrengthUniform, light->mLightStrength);
     glUniform1f(mSpecularStrengthUniform, light->mSpecularStrength);
     //Texture for phong
-    glUniform1i(mTextureUniform1, 0);
-    heightMap->draw(mMatrixUniform1);
+//    glUniform1i(mTextureUniform1, 0);
+//    heightMap->draw(mMatrixUniform1);
 
 
     // What shader to use (textureshader)
-    glUseProgram(mShaderProgram[2]->getProgram());
-    mCamera.update(mPmatrixUniform2, mVmatrixUniform2);
-    glUniform1i(mTextureUniform2, 0);
+//    glUseProgram(mShaderProgram[2]->getProgram());
+//    mCamera.update(mPmatrixUniform2, mVmatrixUniform2);
+//    glUniform1i(mTextureUniform2, 0);
 
-    dogTexture->UseTexture();
-    if (ThirdPersonView) mio->draw(mMatrixUniform2);
+//    dogTexture->UseTexture();
+//    if (ThirdPersonView) mio->draw(mMatrixUniform2);
 
-    if (lightSwitch) onTexture->UseTexture();
-    else offTexture->UseTexture();
-    plane->draw(mMatrixUniform2);
+//    if (lightSwitch) onTexture->UseTexture();
+//    else offTexture->UseTexture();
+//    plane->draw(mMatrixUniform2);
     }
 
     //Calculate framerate before
@@ -307,7 +309,7 @@ void RenderWindow::render()
         float playerHeight = 0.0f;
         QVector2D playerPos = {mio->getPosition().x(), mio->getPosition().z()};
 
-        playerHeight = heightMap->getHeight(playerPos);
+//        playerHeight = heightMap->getHeight(playerPos);
 
         if (controller.moveLeft)
             mio->move(-0.1f, 0.0f, 0.0f);
@@ -356,41 +358,41 @@ void RenderWindow::render()
     }
 
     // Checks for collisions
-    for (int i = 0; i < mEnemies.size(); i++)
-    {
-        float distance = mEnemies[i]->getPosition().distanceToPoint(mio->getPosition());
+//    for (int i = 0; i < mEnemies.size(); i++)
+//    {
+//        float distance = mEnemies[i]->getPosition().distanceToPoint(mio->getPosition());
 
-        if (distance < mio->getRadius() + mEnemies[i]->getRadius() && mEnemies[i]->getRenderStyle() == 0)
-        {
-            mEnemies[i]->setRenderStyle(1);
-            qApp->quit();
-            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+//        if (distance < mio->getRadius() + mEnemies[i]->getRadius() && mEnemies[i]->getRenderStyle() == 0)
+//        {
+//            mEnemies[i]->setRenderStyle(1);
+//            qApp->quit();
+//            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 //            mLogger->logText("Enemy Hit!");
-        }
-    }
+//        }
+//    }
 
 
     // Checks for collisions
     {
-        float distance = plane->getPosition().distanceToPoint(mio->getPosition());
+//        float distance = plane->getPosition().distanceToPoint(mio->getPosition());
 
-                mLogger->logText(std::to_string(distance));
-                mLogger->logText(std::to_string(mio->getRadius()));
-                mLogger->logText(std::to_string(plane->getRadius()));
+//                mLogger->logText(std::to_string(distance));
+//                mLogger->logText(std::to_string(mio->getRadius()));
+//                mLogger->logText(std::to_string(plane->getRadius()));
 
-        if (distance < mio->getRadius() + plane->getRadius())
-        {
-            if (lightSwitch)
-            {
-                lightSwitch = false;
-                plane->setPosition3D({-2.0f, 0.0f, 2.0f});
-            }
-            else if (!lightSwitch)
-            {
-                lightSwitch = true;
-                plane->setPosition3D({2.0f, 0.0f, 2.0f});
-            }
-        }
+//        if (distance < mio->getRadius() + plane->getRadius())
+//        {
+//            if (lightSwitch)
+//            {
+//                lightSwitch = false;
+//                plane->setPosition3D({-2.0f, 0.0f, 2.0f});
+//            }
+//            else if (!lightSwitch)
+//            {
+//                lightSwitch = true;
+//                plane->setPosition3D({2.0f, 0.0f, 2.0f});
+//            }
+//        }
     }
 
     //just to make the triangle rotate - tweak this:
