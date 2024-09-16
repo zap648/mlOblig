@@ -7,35 +7,35 @@ InteractiveObject::InteractiveObject() : mx{0.0f}, my{0.0f}, mz{0.0f}
 
 InteractiveObject::InteractiveObject(std::string fileName, bool newObject) : mx{0.0f}, my{0.0f}, mz{0.0f}
 {
-    if (newObject)
-    {
-        // All Required Vertices
-        //     v   x     y     z     r     g     b
-        Vertex v0{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-        Vertex v1{ 0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f};
-        Vertex v2{-0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 0.0f};
-        Vertex v3{-0.5f, 0.0f,-0.5f, 1.0f, 0.0f, 0.0f};
-        Vertex v4{ 0.5f, 0.0f,-0.5f, 0.0f, 0.0f, 0.0f};
+//    if (newObject)
+//    {
+//        // All Required Vertices
+//        //     v   x     y     z     r     g     b
+//        Vertex v0{ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+//        Vertex v1{ 0.5f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f};
+//        Vertex v2{-0.5f, 0.0f, 0.5f, 1.0f, 1.0f, 0.0f};
+//        Vertex v3{-0.5f, 0.0f,-0.5f, 1.0f, 0.0f, 0.0f};
+//        Vertex v4{ 0.5f, 0.0f,-0.5f, 0.0f, 0.0f, 0.0f};
 
-        // Pyramid insert Vertives
-        mVertices.insert( mVertices.end(),
-                          {
-                              v0, v1, v2,   // Pyramid tri_1
-                              v0, v2, v3,   // Pyramid tri_2
-                              v0, v3, v4,   // Pyramid tri_3
-                              v0, v4, v1,   // Pyramid tri_4
-                              v3, v2, v1,   // Pyramid quad_1/2
-                              v3, v1, v4    // Pyramid quad_2/2
-                          });
-        writeFile(fileName);
-    }
-    else
-        readFile(fileName);
+//        // Pyramid insert Vertives
+//        mVertices.insert( mVertices.end(),
+//                          {
+//                              v0, v1, v2,   // Pyramid tri_1
+//                              v0, v2, v3,   // Pyramid tri_2
+//                              v0, v3, v4,   // Pyramid tri_3
+//                              v0, v4, v1,   // Pyramid tri_4
+//                              v3, v2, v1,   // Pyramid quad_1/2
+//                              v3, v1, v4    // Pyramid quad_2/2
+//                          });
+//        writeFile(fileName);
+//    }
+//    else
+//        readFile(fileName);
 
-    findNormal();
-    findUV();
+//    findNormal();
+//    findUV();
 
-    mr = 1.0f;
+//    mr = 1.0f;
 }
 
 InteractiveObject::~InteractiveObject()

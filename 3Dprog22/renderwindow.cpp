@@ -63,7 +63,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     xyz = new XYZ;
     mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
-    mObjects.push_back(new OctahedronBall(0));
+    mObjects.push_back(new OctahedronBall(2, 0.5f));
 
 //    mObjects.push_back(new TriangleSurface());
 

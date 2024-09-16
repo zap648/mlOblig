@@ -22,12 +22,12 @@
 //! - n is the recursion level (number of repeated subdivisions)
 //!
 
-OctahedronBall::OctahedronBall(int n) : m_rekursjoner(n), m_indeks(0), VisualObject()
+OctahedronBall::OctahedronBall(int n, float r) : m_rekursjoner(n), m_indeks(0), VisualObject()
 {
    mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
+   radius = r;
    oktaederUnitBall();
 }
-
 
 //!//! \brief OctahedronBall::~OctahedronBall() virtual destructor
 //!
@@ -37,8 +37,8 @@ OctahedronBall::~OctahedronBall()
 }
 
 
-// Parametre inn: xyz koordinatene til et triangle v1, v2, v3 ccw
-// Bevarer orienteringen av hjørnene
+// Parametrar inn: xyz koordinatane til eit triangel v1, v2, v3 ccw
+// Bevarer orienteringa av hjørna
 //!
 //! \brief OctahedronBall::lagTriangel()
 //! \param v1 - position on the unit ball for vertex 1
@@ -87,7 +87,7 @@ const QVector3D& v3)
         subDivide(b, v3, v1, n-1);
         subDivide(v3, v2, v1, n-1);
     } else {
-        lagTriangel(a, b, c);
+        lagTriangel(a * radius, b * radius, c * radius);
     }
  }
 
