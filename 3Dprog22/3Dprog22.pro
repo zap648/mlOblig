@@ -17,7 +17,7 @@ SOURCES += main.cpp \
     light.cpp \
     logger.cpp \
     mainwindow.cpp \
-    octahedronball.cpp \
+    octaball.cpp \
     plane.cpp \
     point.cpp \
     renderwindow.cpp \
@@ -44,7 +44,7 @@ HEADERS += \
     light.h \
     logger.h \
     mainwindow.h \
-    octahedronball.h \
+    octaball.h \
     plane.h \
     point.h \
     renderwindow.h \

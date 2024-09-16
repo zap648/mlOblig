@@ -17,7 +17,7 @@
 #include "graph.h"
 #include "heightmap.h"
 #include "light.h"
-#include "octahedronball.h"
+#include "octaball.h"
 #include "shader.h"
 #include "mainwindow.h"
 #include "logger.h"
@@ -63,7 +63,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     xyz = new XYZ;
     mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
-    mObjects.push_back(new OctahedronBall(2, 0.5f));
+    mObjects.push_back(new OctaBall(2, 0.5f));
 
 //    mObjects.push_back(new TriangleSurface());
 

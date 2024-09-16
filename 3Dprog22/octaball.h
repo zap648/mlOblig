@@ -1,22 +1,23 @@
-#ifndef OCTAHEDRONBALL_H
-#define OCTAHEDRONBALL_H
+#ifndef OCTABALL_H
+#define OCTABALL_H
 
 #include "visualobject.h"
 
-class OctahedronBall : public VisualObject
+class OctaBall : public VisualObject
 {
 private:
    int m_rekursjoner;
    int m_indeks;               // brukes i rekursjon, til å bygge m_vertices
    float radius;
+   QVector3D velocity;
    void lagTriangel(const QVector3D& v1, const QVector3D& v2, const QVector3D& v3);
    void subDivide(const QVector3D& a, const QVector3D& b, const QVector3D& c, int n);
    void oktaederUnitBall();
 public:
-   OctahedronBall(int n=0, float r=1);
-   ~OctahedronBall();
+   OctaBall(int n=0, float r=1);
+   ~OctaBall();
    void init();
    void draw(GLint matrixUniform);
 };
 
-#endif // OCTAHEDRONBALL_H
+#endif // OCTABALL_H

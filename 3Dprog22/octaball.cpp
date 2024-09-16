@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "octahedronball.h"
+#include "octaball.h"
 
 
 //! \param n - the recursion level (default is 0 which makes the original Octahedron)
@@ -22,16 +22,16 @@
 //! - n is the recursion level (number of repeated subdivisions)
 //!
 
-OctahedronBall::OctahedronBall(int n, float r) : m_rekursjoner(n), m_indeks(0), VisualObject()
+OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), VisualObject()
 {
    mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
    radius = r;
    oktaederUnitBall();
 }
 
-//!//! \brief OctahedronBall::~OctahedronBall() virtual destructor
+//!//! \brief OctaBall::~OctaBall() virtual destructor
 //!
-OctahedronBall::~OctahedronBall()
+OctaBall::~OctaBall()
 {
    //
 }
@@ -40,7 +40,7 @@ OctahedronBall::~OctahedronBall()
 // Parametrar inn: xyz koordinatane til eit triangel v1, v2, v3 ccw
 // Bevarer orienteringa av hjørna
 //!
-//! \brief OctahedronBall::lagTriangel()
+//! \brief OctaBall::lagTriangel()
 //! \param v1 - position on the unit ball for vertex 1
 //! \param v2 - position on the unit ball for vertex 2
 //! \param v3 - position on the unit ball for vertex 3
@@ -48,7 +48,7 @@ OctahedronBall::~OctahedronBall()
 //! lagTriangel() creates vertex data for a triangle's 3 vertices. This is done in the
 //! final step of recursion.
 //!
-void OctahedronBall::lagTriangel(const QVector3D& v1, const QVector3D& v2,
+void OctaBall::lagTriangel(const QVector3D& v1, const QVector3D& v2,
 const QVector3D& v3)
 {
     Vertex v{v1.x(), v1.y(), v1.z(), 0, 0, 0.75f};
@@ -62,7 +62,7 @@ const QVector3D& v3)
 
  // Rekursiv subdivisjon av triangel
  //!
- //! \brief OctahedronBall::subDivide() recursive subdivision of a triangel
+ //! \brief OctaBall::subDivide() recursive subdivision of a triangel
  //! \param a coordinates for vertex a
  //! \param b coordinates for vertex b
  //! \param c coordinates for vertex c
@@ -76,7 +76,7 @@ const QVector3D& v3)
  //! else
  //! - call lagTriangel(a, b, c)
  //!
- void OctahedronBall::subDivide(const QVector3D& a, const QVector3D& b, const QVector3D& c, int n)
+ void OctaBall::subDivide(const QVector3D& a, const QVector3D& b, const QVector3D& c, int n)
  {
     if (n>0) {
         QVector3D v1 = a+b; v1.normalize();
@@ -93,12 +93,12 @@ const QVector3D& v3)
 
 
  //!
- //! \brief OctahedronBall::oktaederUnitBall() creates 8 unit ball vertices and call subDivide()
+ //! \brief OctaBall::oktaederUnitBall() creates 8 unit ball vertices and call subDivide()
  //!
- //! If the parameter n of the constructor OctahedronBall() is zero, the result will be the
- //! original octahedron consisting of 8 triangles with duplicated vertices.
+ //! If the parameter n of the constructor OctaBall() is zero, the result will be the
+ //! original octa consisting of 8 triangles with duplicated vertices.
  //!
- void OctahedronBall::oktaederUnitBall()
+ void OctaBall::oktaederUnitBall()
  {
     QVector3D v0{0, 0, 1};
     QVector3D v1{1, 0, 0};
@@ -120,10 +120,10 @@ const QVector3D& v3)
 
 
  //!
- //! \brief OctahedronBall::initVertexBufferObjects() calls glGenBuffers(), glBindBuffer() and glBufferdata()
+ //! \brief OctaBall::initVertexBufferObjects() calls glGenBuffers(), glBindBuffer() and glBufferdata()
  //! for using later use of glDrawArrays()
  //!
- void OctahedronBall::init()
+ void OctaBall::init()
  {
     initializeOpenGLFunctions();
 
@@ -155,7 +155,7 @@ const QVector3D& v3)
 
 
  //!
- //! \brief OctahedronBall::draw() draws a ball using glDrawArrays()
+ //! \brief OctaBall::draw() draws a ball using glDrawArrays()
  //! \param positionAttribute    vertex shader variable for position
  //! \param normalAttribute      vertex shader variable for normal or color
  //! \param textureAttribute     vertex shader variable for texture coordinates (optional)
@@ -167,7 +167,7 @@ const QVector3D& v3)
  //! - glVertexAttribPointer()
  //! - glDrawArrays() with GL_TRIANGLES
  //!
- void OctahedronBall::draw(GLint matrixUniform)
+ void OctaBall::draw(GLint matrixUniform)
  {
      mMatrixUniform = matrixUniform;
 
