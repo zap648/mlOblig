@@ -2,9 +2,9 @@
 #define PLANE_H
 
 #include <vector>
-#include "visualobject.h"
+#include "physicsobject.h"
 
-class Plane : public VisualObject
+class Plane : public PhysicsObject
 {
 public:
     Plane();

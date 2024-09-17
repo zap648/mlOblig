@@ -8,6 +8,7 @@ TARGET      = 3D-programmering
 SOURCES += main.cpp \
     bouncybox.cpp \
     camera.cpp \
+    collisionhandler.cpp \
     controller.cpp \
     cube.cpp \
     disc.cpp \
@@ -37,6 +38,7 @@ SOURCES += main.cpp \
 HEADERS += \
     bouncybox.h \
     camera.h \
+    collisionhandler.h \
     controller.h \
     cube.h \
     disc.h \

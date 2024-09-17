@@ -64,16 +64,20 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     xyz = new XYZ;
     mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
-    mObjects.push_back(new OctaBall(2, 0.5f));
+    // OctaBall Object
+    mPhysics.push_back(new OctaBall(2, 0.5f));
+    mObjects.push_back(mPhysics.back());
 
+//    mCollisionHandler->pObjects.push_back(mPhysics.back());
 //    mObjects.push_back(new BouncyBox(10.0f, 3.0f, 10.0f, false));
 
 //    mObjects.push_back(new TriangleSurface());
 
     // Adding Plane Object to mObject
     plane = new Plane();
-    plane->setPosition3D(QVector3D{0.0f, 0.0f, -5.0f});
     mObjects.push_back(plane);
+    mPhysics.push_back(plane);
+    plane->move(0.0f, 0.0f, -5.0f);
 
     // Setting up Height Map and adding it to mObjects
 //    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
@@ -93,28 +97,28 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Adding Trophies to mTrophies (mObject but for trophies)
     // Trophies: tObject(x, y, z, radius)
-    mTrophies.push_back(new TrophyObject(1.5f, 0.0f, -1.5f, 0.2));
+//    mTrophies.push_back(new TrophyObject(1.5f, 0.0f, -1.5f, 0.2));
 
-    mTrophies.push_back(new TrophyObject(4.5f, 0.0f, 2.3f, 0.2));
+//    mTrophies.push_back(new TrophyObject(4.5f, 0.0f, 2.3f, 0.2));
 
-    mTrophies.push_back(new TrophyObject(3.2f, 0.0f, -2.5f, 0.2));
+//    mTrophies.push_back(new TrophyObject(3.2f, 0.0f, -2.5f, 0.2));
 
     // Add trophy objects into mObjects, and sets render style to visible
-    for (int i = 0; i < mTrophies.size(); i++)
-    {
-        mTrophies[i]->setRenderStyle(0);
-        mObjects.push_back(mTrophies[i]);
-    }
-    trophyCount = 0;
+//    for (int i = 0; i < mTrophies.size(); i++)
+//    {
+//        mTrophies[i]->setRenderStyle(0);
+//        mObjects.push_back(mTrophies[i]);
+//    }
+//    trophyCount = 0;
 
-    mEnemies.push_back(new EnemyObject(-1.5f, 0.0f, -1.5f, 0.2));
+//    mEnemies.push_back(new EnemyObject(-1.5f, 0.0f, -1.5f, 0.2));
 
     // Add enemy objects
-    for (int i = 0; i < mEnemies.size(); i++)
-    {
-        mEnemies[i]->setRenderStyle(0);
-        mObjects.push_back(mEnemies[i]);
-    }
+//    for (int i = 0; i < mEnemies.size(); i++)
+//    {
+//        mEnemies[i]->setRenderStyle(0);
+//        mObjects.push_back(mEnemies[i]);
+//    }
 
     // Setting up the camera
     cameraEye = mio->getPosition() + QVector3D(0, 2.5f, 6.0f);
@@ -344,21 +348,52 @@ void RenderWindow::render()
         specularStrength = 0.0f;
     }
 
-    // Checks for collisions
-    for (int i = 0; i < mTrophies.size(); i++)
-    {
-        float distance = mTrophies[i]->getPosition().distanceToPoint(mio->getPosition());
-//        mLogger->logText(std::to_string(distance));
-//        mLogger->logText(std::to_string(mio->getRadius()));
-//        mLogger->logText(std::to_string(mTrophies[i]->getRadius()));
+    mCollisionHandler->DetectCollision(mPhysics);
 
-        if (distance < mio->getRadius() + mTrophies[i]->getRadius() && mTrophies[i]->getRenderStyle() == 0)
+    mLogger->logText("Entered DetectCollision");
+    if (mPhysics.size() > 1)
+    {
+        mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
+        // assume the radius is 1
+        for (int i = 0; mPhysics.size() > i; i++)
         {
-            mTrophies[i]->setRenderStyle(1);
-            trophyCount++;
-            mLogger->logText("Trophy Count: " + std::to_string(trophyCount));
+            for (int j = 0; mPhysics.size() > j; j++)
+            {
+                if (i != j)
+                {
+                    float distance = mPhysics[i]->getPosition().distanceToPoint(mPhysics[j]->getPosition());
+                    mLogger->logText(std::to_string(distance));
+                    if (distance < 1)
+                    {
+                        mPhysics[i]->setVelocity(-mPhysics[i]->getVelocity());
+                        mPhysics[j]->setVelocity(-mPhysics[j]->getVelocity());
+                        mLogger->logText("Collision!");
+                    }
+                }
+            }
         }
     }
+    else
+    {
+        mLogger->logText("pObjects is not larger than 1");
+    }
+    mLogger->logText("Exited DetectCollision");
+
+    // Checks for collisions
+//    for (int i = 0; i < mTrophies.size(); i++)
+//    {
+//        float distance = mTrophies[i]->getPosition().distanceToPoint(mio->getPosition());
+////        mLogger->logText(std::to_string(distance));
+////        mLogger->logText(std::to_string(mio->getRadius()));
+////        mLogger->logText(std::to_string(mTrophies[i]->getRadius()));
+
+//        if (distance < mio->getRadius() + mTrophies[i]->getRadius() && mTrophies[i]->getRenderStyle() == 0)
+//        {
+//            mTrophies[i]->setRenderStyle(1);
+//            trophyCount++;
+//            mLogger->logText("Trophy Count: " + std::to_string(trophyCount));
+//        }
+//    }
 
     // Checks for collisions
 //    for (int i = 0; i < mEnemies.size(); i++)

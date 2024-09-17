@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "camera.h";
+#include "plane.h"
+#include "collisionhandler.h"
 #include "controller.h"
 #include "interactiveobject.h"
 #include "light.h"
@@ -53,13 +55,15 @@ private:
     std::vector<VisualObject*> mObjects;
     std::vector<VisualObject*> mTrophies;
     std::vector<VisualObject*> mEnemies;
+    std::vector<PhysicsObject*> mPhysics;
     VisualObject* mio;      //member interactive object
-    VisualObject* plane;
+    Plane* plane;
     VisualObject* xyz;
     VisualObject* heightMap;
     Camera mCamera;
     Light* light{nullptr};
     Controller controller;
+    CollisionHandler* mCollisionHandler;
 
     Texture* dogTexture;
     Texture* offTexture;
