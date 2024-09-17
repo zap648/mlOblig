@@ -16,6 +16,7 @@ public:
     QVector3D getAcceleration();
     void setVelocity(QVector3D v);
     void setAcceleration(QVector3D a);
+    void UpdatePosition();
 };
 
 #endif // PHYSICSOBJECT_H

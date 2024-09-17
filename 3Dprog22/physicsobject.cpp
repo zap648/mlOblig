@@ -29,3 +29,9 @@ void PhysicsObject::setAcceleration(QVector3D a)
 {
     acceleration = a;
 }
+
+void PhysicsObject::UpdatePosition()
+{
+    velocity += acceleration;
+    mMatrix.translate(velocity);
+}

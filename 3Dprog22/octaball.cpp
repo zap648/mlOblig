@@ -23,10 +23,11 @@
 //!
 
 OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), PhysicsObject()
-{
+{   // Heilt gløymt kva m_indeks gjer :/
    mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
    radius = r;
    oktaederUnitBall();
+   setAcceleration(QVector3D{0, 0, -0.001f});
 }
 
 //!//! \brief OctaBall::~OctaBall() virtual destructor
@@ -179,4 +180,6 @@ const QVector3D& v3)
     //                   degree, x,   y,   z -axis
     if(mRotate)
         mMatrix.rotate(2.f, 0.f, 1.0, 0.f);
+
+    UpdatePosition();
  }
