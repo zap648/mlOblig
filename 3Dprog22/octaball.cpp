@@ -22,7 +22,7 @@
 //! - n is the recursion level (number of repeated subdivisions)
 //!
 
-OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), VisualObject()
+OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), PhysicsObject()
 {
    mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
    radius = r;
