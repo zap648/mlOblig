@@ -1,13 +1,14 @@
 #include "plane.h"
 
+// Creates an upright Plane
 Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
 {
     // Required Vertices
     //     v   x     y     z     r     g     b     u     v
-    Vertex v0{-0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
-    Vertex v1{ 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v0{-0.5f, 0.5f,-0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{ 0.5f, 0.5f,-0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
     Vertex v2{ 0.5, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
-    Vertex v3{-0.5f,-0.5f,-0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+    Vertex v3{-0.5f,-0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f};    // Bottom-left vertex
 
     mVertices.insert(mVertices.end(),
                      {
@@ -16,6 +17,25 @@ Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
                      });
 
     mr = 0.1f;
+
+    mMatrix.setToIdentity();
+}
+
+// Creates a custom Plane
+Plane::Plane(float x, float y, float z) : mx{0.0f}, my{0.0f}, mz{0.0f}
+{
+    // Required Vertices
+    //     v   x  y  z     r     g     b     u     v
+    Vertex v0{-x, y,-z, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{ x, y,-z, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v2{ x,-y, z, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f};    // Bottom-right vertex
+    Vertex v3{-x,-y, z, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+
+    mVertices.insert(mVertices.end(),
+                     {
+                     v0, v1, v2,    // Plane quad_1/2
+                     v0, v2, v3,    // Plane quad_2/2
+                     });
 
     mMatrix.setToIdentity();
 }

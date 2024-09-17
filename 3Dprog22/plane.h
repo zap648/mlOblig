@@ -8,6 +8,7 @@ class Plane : public VisualObject
 {
 public:
     Plane();
+    Plane(float x, float y, float z);
     ~Plane();
 
     void init() override;

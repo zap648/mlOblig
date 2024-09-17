@@ -6,6 +6,7 @@ CONFIG      += c++17
 TARGET      = 3D-programmering
 
 SOURCES += main.cpp \
+    bouncybox.cpp \
     camera.cpp \
     controller.cpp \
     cube.cpp \
@@ -25,7 +26,7 @@ SOURCES += main.cpp \
     restarter.cpp \
     shader.cpp \
     stb_image.cpp \
-    tetrahedon.cpp \
+    tetrahedron.cpp \
     texture.cpp \
     trianglesurface.cpp \
     trophyobject.cpp \
@@ -34,6 +35,7 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
+    bouncybox.h \
     camera.h \
     controller.h \
     cube.h \
@@ -53,7 +55,7 @@ HEADERS += \
     restarter.h \
     shader.h \
     stb_image.h \
-    tetrahedon.h \
+    tetrahedron.h \
     texture.h \
     trianglesurface.h \
     trophyobject.h \

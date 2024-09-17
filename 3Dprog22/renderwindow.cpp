@@ -13,6 +13,7 @@
 
 #include <string>
 
+#include "bouncybox.h"
 #include "disc.h"
 #include "graph.h"
 #include "heightmap.h"
@@ -26,7 +27,7 @@
 #include "enemyobject.h"
 #include "xyz.h"
 #include "plane.h"
-#include "tetrahedon.h"
+#include "tetrahedron.h"
 #include "cube.h"
 #include "point.h"
 
@@ -65,11 +66,13 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     mObjects.push_back(new OctaBall(2, 0.5f));
 
+//    mObjects.push_back(new BouncyBox(10.0f, 3.0f, 10.0f, false));
+
 //    mObjects.push_back(new TriangleSurface());
 
     // Adding Plane Object to mObject
     plane = new Plane();
-    plane->setPosition3D(QVector3D{2.0f, 0.0f, 2.0f});
+    plane->setPosition3D(QVector3D{0.0f, 0.0f, -5.0f});
     mObjects.push_back(plane);
 
     // Setting up Height Map and adding it to mObjects

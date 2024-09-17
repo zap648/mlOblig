@@ -1,6 +1,6 @@
-#include "tetrahedon.h"
+#include "tetrahedron.h"
 
-Tetrahedon::Tetrahedon()
+Tetrahedron::Tetrahedron()
 {
     // Tetrahedon
     // 1st Tri
@@ -22,12 +22,35 @@ Tetrahedon::Tetrahedon()
     mMatrix.setToIdentity();
 }
 
-Tetrahedon::~Tetrahedon()
+Tetrahedron::Tetrahedron(float x, float y, float z, bool roof)
+{
+    // Tetrahedon
+    // 1st Tri
+    mVertices.push_back(Vertex{0 * x,   0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{0 * x,  -0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{0.5f * x,   0 * y,  -0.25f * z,  0,  1.0f,  0});
+    // 2nd Tri
+    mVertices.push_back(Vertex{ 0 * x,  0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{ 0 * x, -0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{-0.5f * x,  0 * y,  -0.25f * z,  0,  0,  1.0f});
+    // 3rd Tri
+    mVertices.push_back(Vertex{ 0 * x,  0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{ 0.5f * x,  0 * y,  -0.25f * z,  0,  1.0f,  0});
+    mVertices.push_back(Vertex{-0.5f * x,  0 * y,  -0.25f * z,  0,  0,  1.0f});
+    // 4th Tri
+    mVertices.push_back(Vertex{ 0 * x, -0.5f * y,   0.25f * z,  1.0f,  0,  0});
+    mVertices.push_back(Vertex{ 0.5f * x,  0 * y,  -0.25f * z,  0,  1.0f,  0});
+    mVertices.push_back(Vertex{-0.5f * x,  0 * y,  -0.25f * z,  0,  0,  1.0f});
+    tRoof = roof;
+    mMatrix.setToIdentity();
+}
+
+Tetrahedron::~Tetrahedron()
 {
 
 }
 
-void Tetrahedon::init()
+void Tetrahedron::init()
 {
     initializeOpenGLFunctions();
 
@@ -76,7 +99,7 @@ void Tetrahedon::init()
     glBindVertexArray(0);
 }
 
-void Tetrahedon::draw(GLint matrixUniform)
+void Tetrahedron::draw(GLint matrixUniform)
 {
     mMatrixUniform = matrixUniform;
 
