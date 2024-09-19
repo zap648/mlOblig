@@ -89,40 +89,40 @@ void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
 
 void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
 {
-    // Collide-funksjonen må endre seg til å kunne regne ut avstanden fra ballen til det nærmeste punktet på planet
+    // Obs! Collide-funksjonen må endre seg til å kunne regne ut avstanden fra ballen til det nærmeste punktet på planet
 //    mLogger->logText("Collision!");
     object1->setVelocity(object1->getVelocity() * -1);
     object2->setVelocity(object2->getVelocity() * -1);
 
     // objektspecifike sprett (ball (1) or wall (0))
     // viss et objekt er ball (1) og den andre er en vegg (0)
-    if ((object1->type() == 0 && object2->type() == 1) ||
-            (object2->type() == 0 && object1->type() == 0))
-    {
-        if (object1->type() == 0 && object2->type() == 1)
-        {
-            // Ville ha likt og testa om denne Casten funker
-            BallWallCollision((OctaBall *) object2->type(), (Plane *) object1->type());
-        }
-        else
-        {
-            BallWallCollision((OctaBall *) object1->type(), (Plane *) object2->type());
-        }
-    }
-    else if ((object1->type() == 1 && object2->type() == 1))
-    {
-        BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
-    }
-    if (type() == 1)
-    {
-        // ballsprettefunksjon hit
-    }
+//    if ((object1->type() == 0 && object2->type() == 1) ||
+//            (object2->type() == 0 && object1->type() == 0))
+//    {
+//        if (object1->type() == 0 && object2->type() == 1)
+//        {
+//            // Ville ha likt og testa om denne Casten funker
+//            BallWallCollision((OctaBall *) object2->type(), (Plane *) object1->type());
+//        }
+//        else
+//        {
+//            BallWallCollision((OctaBall *) object1->type(), (Plane *) object2->type());
+//        }
+//    }
+//    else if ((object1->type() == 1 && object2->type() == 1))
+//    {
+//        BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
+//    }
+//    if (type() == 1)
+//    {
+//        // ballsprettefunksjon hit
+//    }
 //    mLogger->logText("New velocity is " + std::to_string(object1->getVelocity().y()) + " and " + std::to_string(object2->getVelocity().y()));
 }
 
 void CollisionHandler::BallWallCollision(OctaBall* ball, Plane* wall)
 {
-    QVector3D wallNormal = wall->getNormal();
+//    QVector3D wallNormal = wall->getNormal();
 
     // Ballen får normalen til planet og går oppover like langt som den gikk ned i planet
     // Eks: Viss ballen gikk -0.3 enheter under planet, skal ballen nå være 0.3 enheter over planet, i retning mot normalen
@@ -141,4 +141,9 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     // Ballen skal også skifte hastighetvektor til å fortsete i retning fra kollisjonspunktet.
     // Jeg følger formlene som blir vist i 9.7.5 (hvor n er normalen funnet i forrige kommentar og d som er avstanden mellom ballene da de kolliderte)
     // og endrer hastighetsvektoren til summen
+}
+
+int CollisionHandler::type()
+{
+    return 2;
 }

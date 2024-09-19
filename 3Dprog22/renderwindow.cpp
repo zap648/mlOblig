@@ -61,8 +61,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 
     // XYZ-axis Object
-    xyz = new XYZ;
-    mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
+//    xyz = new XYZ;
+//    mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
     // OctaBall Object
     ball = new OctaBall(2, 0.5f);

@@ -28,6 +28,8 @@ public:
     void Collide(PhysicsObject* object1, PhysicsObject* object2);
     void BallWallCollision(OctaBall* ball, Plane* wall);
     void BallBallCollision(OctaBall* ball0, OctaBall* ball1);
+
+    int type() override;
 };
 
 #endif // COLLISIONHANDLER_H

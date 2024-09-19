@@ -22,7 +22,7 @@ public:
     void setRadius(float r);
     void move(float dx, float dy, float dz) override;
 
-    virtual int type(); // 0 - plane, 1 - ball
+    virtual int type() {} // 0 - plane, 1 - ball, 2 - collisionHandler
 };
 
 #endif // PHYSICSOBJECT_H
