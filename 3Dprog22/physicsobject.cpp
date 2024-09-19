@@ -33,15 +33,22 @@ void PhysicsObject::setAcceleration(QVector3D a)
 void PhysicsObject::UpdatePosition()
 {
     velocity += acceleration;
-    mx += velocity.x();
-    my += velocity.y();
-    mz += velocity.z();
     move(velocity.x(), velocity.y(), velocity.z());
 }
 
 QVector3D PhysicsObject::getPosition()
 {
     return QVector3D{mx, my, mz};
+}
+
+float PhysicsObject::getRadius()
+{
+    return mr;
+}
+
+void PhysicsObject::setRadius(float r)
+{
+    mr = r;
 }
 
 void PhysicsObject::move(float dx, float dy, float dz)

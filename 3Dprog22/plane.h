@@ -14,9 +14,12 @@ public:
     void init() override;
     void draw(GLint matrixUniform) override;
 
-    float getRadius() override;
+    QVector3D getNormal();
+
+    float width; float height; float length;
 private:
     float mx, my, mz, mr;
+    QVector3D normal;
 };
 
 #endif // PLANE_H

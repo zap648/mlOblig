@@ -65,8 +65,10 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
     // OctaBall Object
-    mPhysics.push_back(new OctaBall(2, 0.5f));
-    mObjects.push_back(mPhysics.back());
+    ball = new OctaBall(2, 0.5f);
+    mObjects.push_back(ball);
+    mPhysics.push_back(ball);
+//    mCollisionHandler->addBall(ball);
 
 //    mCollisionHandler->pObjects.push_back(mPhysics.back());
 //    mObjects.push_back(new BouncyBox(10.0f, 3.0f, 10.0f, false));
@@ -74,10 +76,11 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(new TriangleSurface());
 
     // Adding Plane Object to mObject
-    plane = new Plane();
+    plane = new Plane(5.0f, 0.0f, 5.0f);
+    plane->move(0.0f, -5.0f, 0.0f);
     mObjects.push_back(plane);
     mPhysics.push_back(plane);
-    plane->move(0.0f, 0.0f, -5.0f);
+//    mCollisionHandler->addWall(plane);
 
     // Setting up Height Map and adding it to mObjects
 //    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
@@ -121,9 +124,9 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    }
 
     // Setting up the camera
-    cameraEye = mio->getPosition() + QVector3D(0, 2.5f, 6.0f);
+    cameraEye = mio->getPosition() + QVector3D(0, 5.0f, 12.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
-    cameraAt = mio->getPosition() + QVector3D(0,0.5f,0) + QVector3D( 0.0f, 0.0f,-0.1f);
+    cameraAt = mio->getPosition() - QVector3D(0, -10.0f, 0);
     //cameraAt = QVector3D{-7.0f, 0.0f, -5.0f};
     cameraUp = QVector3D{0.0f, 1.0f, 0.0f};
 }
@@ -333,8 +336,8 @@ void RenderWindow::render()
 
         mio->setPosition3D(QVector3D{mio->getPosition().x(), playerHeight, mio->getPosition().z()});
 
-        cameraEye = mio->getPosition() + QVector3D(0, 2.5f, 6.0f);
-        cameraAt = mio->getPosition() + QVector3D(0,0.5f,0) + QVector3D( 0.0f, 0.0f,-0.1f);
+        cameraEye = mio->getPosition() + QVector3D(0, 5.0f, 12.0f);
+        cameraAt = mio->getPosition();
     }
 
     if (lightSwitch)
@@ -348,36 +351,46 @@ void RenderWindow::render()
         specularStrength = 0.0f;
     }
 
-    mCollisionHandler->DetectCollision(mPhysics);
-
-    mLogger->logText("Entered DetectCollision");
-    if (mPhysics.size() > 1)
     {
-        mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
-        // assume the radius is 1
-        for (int i = 0; mPhysics.size() > i; i++)
+//        mCollisionHandler->DetectWallCollision();
+//        mCollisionHandler->DetectCollision(mPhysics);
+
+        mLogger->logText("Entered DetectCollision");
+        if (mPhysics.size() > 1)
         {
-            for (int j = 0; mPhysics.size() > j; j++)
+            std::vector<std::vector<int>> tracker;
+            mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
+            // assume the radius is 1
+            for (int i = 0; mPhysics.size() > i; i++)
             {
-                if (i != j)
+                tracker.push_back(*new std::vector<int>());
+                for (int j = 0; j <= i; j++)
+                    tracker[i].push_back(j);
+
+                for (int j = 0; mPhysics.size() > j; j++)
                 {
+                    if (std::find(tracker[i].begin(), tracker[i].end(), j) != tracker[i].end())
+                    {
+                        continue;
+                    }
                     float distance = mPhysics[i]->getPosition().distanceToPoint(mPhysics[j]->getPosition());
                     mLogger->logText(std::to_string(distance));
-                    if (distance < 1)
+                    if (distance < mPhysics[i]->getRadius())
                     {
-                        mPhysics[i]->setVelocity(-mPhysics[i]->getVelocity());
-                        mPhysics[j]->setVelocity(-mPhysics[j]->getVelocity());
+                        mPhysics[i]->setVelocity(mPhysics[i]->getVelocity() * -1);
+                        mPhysics[j]->setVelocity(mPhysics[j]->getVelocity() * -1);
+//                        mLogger->logText("Velocity is " + std::to_string(mPhysics[i]->getVelocity().y()) + " or " + std::to_string(mPhysics[j]->getVelocity().y()));
                         mLogger->logText("Collision!");
                     }
                 }
             }
         }
+        else
+        {
+            mLogger->logText("pObjects is not larger than 1");
+        }
+        mLogger->logText("Exited DetectCollision");
     }
-    else
-    {
-        mLogger->logText("pObjects is not larger than 1");
-    }
-    mLogger->logText("Exited DetectCollision");
 
     // Checks for collisions
 //    for (int i = 0; i < mTrophies.size(); i++)

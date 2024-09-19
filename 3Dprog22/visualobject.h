@@ -23,9 +23,9 @@ public:
     virtual void move(float x, float y, float z) {  }
     // move for simulerende objekter
     virtual void move(float dt) {}
-    virtual float getRadius() {}
     virtual QVector3D getPosition() {}
     virtual float getHeight(QVector2D p) {}
+    virtual float getRadius() {}
 
     int getRenderStyle();
     void setRenderStyle(int input);

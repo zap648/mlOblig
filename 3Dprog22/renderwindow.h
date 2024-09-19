@@ -64,6 +64,7 @@ private:
     Light* light{nullptr};
     Controller controller;
     CollisionHandler* mCollisionHandler;
+    OctaBall* ball;
 
     Texture* dogTexture;
     Texture* offTexture;

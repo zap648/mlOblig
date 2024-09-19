@@ -17,25 +17,32 @@ Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
                      });
 
     mr = 0.1f;
+    normal = getVectorNormal(v0, v1, v2);
 
     mMatrix.setToIdentity();
 }
 
 // Creates a custom Plane
-Plane::Plane(float x, float y, float z) : mx{0.0f}, my{0.0f}, mz{0.0f}
+Plane::Plane(float w, float h, float l) : mx{0.0f}, my{0.0f}, mz{0.0f}
 {
+    width = w;
+    height = h;
+    length = l;
     // Required Vertices
     //     v   x  y  z     r     g     b     u     v
-    Vertex v0{-x, y,-z, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f};    // Top-left vertex
-    Vertex v1{ x, y,-z, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f};    // Top-right vertex
-    Vertex v2{ x,-y, z, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f};    // Bottom-right vertex
-    Vertex v3{-x,-y, z, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+    Vertex v0{-w, h,-l, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{ w, h,-l, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v2{ w,-h, l, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
+    Vertex v3{-w,-h, l, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
 
     mVertices.insert(mVertices.end(),
                      {
                      v0, v1, v2,    // Plane quad_1/2
                      v0, v2, v3,    // Plane quad_2/2
                      });
+
+    mr = 0.1f;
+    normal = getVectorNormal(v0, v1, v2);
 
     mMatrix.setToIdentity();
 }
@@ -110,7 +117,7 @@ void Plane::draw(GLint matrixUniform)
        mMatrix.rotate(2.0f, 0.0f, 1.0f, 0.0f);
 }
 
-float Plane::getRadius()
+QVector3D Plane::getNormal()
 {
-    return mr;
+    return normal;
 }
