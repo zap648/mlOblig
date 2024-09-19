@@ -3,8 +3,11 @@
 
 VisualObject::VisualObject()
 {
-
+    //Get the instance of the utility Output logger
+    //Have to do this, else program will crash (or you have to put in nullptr tests...)
+    mLogger = Logger::getInstance();
 }
+
 VisualObject::~VisualObject()
 {
    glDeleteVertexArrays( 1, &mVAO );

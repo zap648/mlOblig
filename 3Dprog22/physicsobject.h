@@ -7,8 +7,7 @@ class PhysicsObject : public VisualObject
 {
 private:
     float mx, my, mz, mr;           // posisjon & radius
-    QVector3D velocity;         // brukt til å røra på Objectet
-    QVector3D acceleration;     // "    "  "    "   "
+    QVector3D mAcceleration;     // "    "  "    "   "
 public:
     PhysicsObject();
     ~PhysicsObject();
@@ -22,6 +21,8 @@ public:
     float getRadius() override;
     void setRadius(float r);
     void move(float dx, float dy, float dz) override;
+
+    virtual int type(); // 0 - plane, 1 - ball
 };
 
 #endif // PHYSICSOBJECT_H

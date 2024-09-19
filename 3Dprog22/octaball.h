@@ -16,6 +16,7 @@ public:
     ~OctaBall();
     void init();
     void draw(GLint matrixUniform);
+    int type() override;
 };
 
 #endif // OCTABALL_H

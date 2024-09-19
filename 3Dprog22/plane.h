@@ -13,6 +13,7 @@ public:
 
     void init() override;
     void draw(GLint matrixUniform) override;
+    int type() override;
 
     QVector3D getNormal();
 

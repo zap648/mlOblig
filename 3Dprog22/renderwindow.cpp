@@ -353,43 +353,43 @@ void RenderWindow::render()
 
     {
 //        mCollisionHandler->DetectWallCollision();
-//        mCollisionHandler->DetectCollision(mPhysics);
+        mCollisionHandler->DetectCollision(mPhysics);
 
-        mLogger->logText("Entered DetectCollision");
-        if (mPhysics.size() > 1)
-        {
-            std::vector<std::vector<int>> tracker;
-            mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
-            // assume the radius is 1
-            for (int i = 0; mPhysics.size() > i; i++)
-            {
-                tracker.push_back(*new std::vector<int>());
-                for (int j = 0; j <= i; j++)
-                    tracker[i].push_back(j);
+//        mLogger->logText("Entered DetectCollision");
+//        if (mPhysics.size() > 1)
+//        {
+//            std::vector<std::vector<int>> tracker;
+//            mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
+//            // assume the radius is 1
+//            for (int i = 0; mPhysics.size() > i; i++)
+//            {
+//                tracker.push_back(*new std::vector<int>());
+//                for (int j = 0; j <= i; j++)
+//                    tracker[i].push_back(j);
 
-                for (int j = 0; mPhysics.size() > j; j++)
-                {
-                    if (std::find(tracker[i].begin(), tracker[i].end(), j) != tracker[i].end())
-                    {
-                        continue;
-                    }
-                    float distance = mPhysics[i]->getPosition().distanceToPoint(mPhysics[j]->getPosition());
-                    mLogger->logText(std::to_string(distance));
-                    if (distance < mPhysics[i]->getRadius())
-                    {
-                        mPhysics[i]->setVelocity(mPhysics[i]->getVelocity() * -1);
-                        mPhysics[j]->setVelocity(mPhysics[j]->getVelocity() * -1);
-//                        mLogger->logText("Velocity is " + std::to_string(mPhysics[i]->getVelocity().y()) + " or " + std::to_string(mPhysics[j]->getVelocity().y()));
-                        mLogger->logText("Collision!");
-                    }
-                }
-            }
-        }
-        else
-        {
-            mLogger->logText("pObjects is not larger than 1");
-        }
-        mLogger->logText("Exited DetectCollision");
+//                for (int j = 0; mPhysics.size() > j; j++)
+//                {
+//                    if (std::find(tracker[i].begin(), tracker[i].end(), j) != tracker[i].end())
+//                    {
+//                        continue;
+//                    }
+//                    float distance = mPhysics[i]->getPosition().distanceToPoint(mPhysics[j]->getPosition());
+//                    mLogger->logText(std::to_string(distance));
+//                    if (distance < mPhysics[i]->getRadius())
+//                    {
+//                        mPhysics[i]->setVelocity(mPhysics[i]->getVelocity() * -1);
+//                        mPhysics[j]->setVelocity(mPhysics[j]->getVelocity() * -1);
+////                        mLogger->logText("Velocity is " + std::to_string(mPhysics[i]->getVelocity().y()) + " or " + std::to_string(mPhysics[j]->getVelocity().y()));
+//                        mLogger->logText("Collision!");
+//                    }
+//                }
+//            }
+//        }
+//        else
+//        {
+//            mLogger->logText("pObjects is not larger than 1");
+//        }
+//        mLogger->logText("Exited DetectCollision");
     }
 
     // Checks for collisions

@@ -117,6 +117,11 @@ void Plane::draw(GLint matrixUniform)
        mMatrix.rotate(2.0f, 0.0f, 1.0f, 0.0f);
 }
 
+int Plane::type()
+{
+    return 0;
+}
+
 QVector3D Plane::getNormal()
 {
     return normal;
