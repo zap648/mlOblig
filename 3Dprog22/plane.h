@@ -16,6 +16,7 @@ public:
     int type() override;
 
     QVector3D getNormal();
+    float distanceFromPoint(QVector3D point);
 
     float width; float height; float length;
 private:

@@ -39,8 +39,18 @@ void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
                 {
                     continue;
                 }
-                float distance = pObjects[i]->getPosition().distanceToPoint(pObjects[j]->getPosition());
-//                mLogger->logText(std::to_string(distance));
+                float distance = 0;
+                if (pObjects[i]->type() != pObjects[j]->type())
+                {
+                    if (pObjects[j]->type() == 0) // if the pObjects is wall
+                        distance = ((Plane *) pObjects[j])->distanceFromPoint(pObjects[i]->getPosition());
+                    else // if the other pObjects is wall
+                        distance = ((Plane *) pObjects[i])->distanceFromPoint(pObjects[j]->getPosition());
+                }
+                else // if the pObjects are equal (only both being balls matter)
+                    distance = pObjects[i]->getPosition().distanceToPoint(pObjects[j]->getPosition());
+                // mLogger->logText(std::to_string(distance));
+
                 if (distance < pObjects[i]->getRadius())
                 {
                     Collide(pObjects[i], pObjects[j]);
@@ -58,13 +68,12 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
 {
 //    mLogger->logText("Collision!");
 
-    // objektspecifike sprett (ball (1) or wall (0))
+    // objektspesifike sprett (ball (1) or wall (0))
     // viss et objekt er ball (1) og den andre er en vegg (0)
     if ((object1->type() != object2->type()))
     {
         if (object1->type() == 0 && object2->type() == 1)
         {
-            // Ville ha likt og testa om denne Casten funker
             BallWallCollision((OctaBall *) object2, (Plane *) object1);
         }
         else
@@ -74,25 +83,26 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
     }
 //    else if ((object1->type() == 1 && object2->type() == 1))
 //    {
+//        mLogger->logText("Collision!");
 //        BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
 //    }
-//    mLogger->logText("New velocity is " + std::to_string(object1->getVelocity().y()) + " and " + std::to_string(object2->getVelocity().y()));
 }
 
 void CollisionHandler::BallWallCollision(OctaBall* ball, Plane* wall)
 {
-//    mLogger->logText("Collision!");
     // Obs! Collide-funksjonen må endre seg til å kunne regne ut avstanden fra ballen til det nærmeste punktet på planet
+    float distance = wall->distanceFromPoint(ball->getPosition());
+//    distance -= ball->getRadius();
+
     ball->setVelocity(-2 * QVector3D().dotProduct(wall->getNormal(), ball->getVelocity()) * wall->getNormal() + ball->getVelocity());
 
     // Ballen får normalen til planet og går oppover like langt som den gikk ned i planet
     // Eks: Viss ballen gikk -0.3 enheter under planet, skal ballen nå være 0.3 enheter over planet, i retning mot normalen
     // x og y retning (i forhold til normalen) skal være den samme
-    float distance = ball->getPosition().distanceToPoint(wall->getPosition()) /* HUGSA! Byt ut wall->getPosition() når du finn det næraste mellomromet mellom ballen og planet */ - ball->getRadius();
-    ball->move(wall->getNormal() * (distance));
+    ball->move(wall->getNormal() * (distance - ball->getRadius()));
 
     // Uferdig, ballen skal etter kollisjon endre hastighetvektoren til å gå fra veggen, men uten å endre x,z fartene (i forhold til normalen)
-//    ball->setVelocity(ball->getVelocity() * wallNormal); // Vil sikkert ikke virke
+//    ball->setVelocity(ball->getVelocity() * wallNormal); // Vil ikke virke
 }
 
 void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
@@ -101,6 +111,7 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     // "Normalen" i dette tilfellet vil være fra ballen sitt senter til senteret i den andre ballen (.normalized())
     // da de støtte på hverandre, slik at kollisjonen er litt mer dynamisk enn med en vegg
 
+    //    mLogger->logText("New velocity is " + std::to_string(object1->getVelocity().y()) + " and " + std::to_string(object2->getVelocity().y()));
 
     // Ballen skal også skifte hastighetvektor til å fortsete i retning fra kollisjonspunktet.
     // Jeg følger formlene som blir vist i 9.7.5 (hvor n er normalen funnet i forrige kommentar og d som er avstanden mellom ballene da de kolliderte)
@@ -109,5 +120,5 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
 
 int CollisionHandler::type()
 {
-    return 2;
+    return -1;
 }
