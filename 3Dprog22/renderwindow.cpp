@@ -226,7 +226,7 @@ void RenderWindow::init()
 void RenderWindow::render()
 {
     mCamera.init();
-    mCamera.perspective(60, 4.0/3.0, 0.1, 1000.0);
+    mCamera.perspective(60, (double) width()/height(), 0.1, 1000.0); // Doubles REQUIRE decimals - apparently
 
     //moves camera
     // LookAt Interactive Object (if it exists)

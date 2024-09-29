@@ -25,6 +25,10 @@ Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
 // Creates a custom Plane
 Plane::Plane(float w, float h, float l) : mx{0.0f}, my{0.0f}, mz{0.0f}
 {
+    w /= 2;
+    h /= 2;
+    l /= 2;
+
     width = w;
     height = h;
     length = l;
