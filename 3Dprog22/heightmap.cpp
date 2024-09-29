@@ -1,5 +1,6 @@
 #include "heightmap.h"
 
+#include "logger.h"
 #include "stb_image.h"
 #include <cmath>
 

@@ -8,7 +8,6 @@
 #include <vector>
 #include <QOpenGLTexture>
 #include "vertex.h"
-#include "logger.h"
 
 
 class VisualObject : public QOpenGLFunctions_4_1_Core
@@ -23,6 +22,8 @@ public:
     virtual void move(float x, float y, float z) {  }
     // move for simulerende objekter
     virtual void move(float dt) {}
+    // move for fysiske objekter
+    virtual void move(QVector3D v) {}
     virtual QVector3D getPosition() {}
     virtual float getHeight(QVector2D p) {}
     virtual float getRadius() {}

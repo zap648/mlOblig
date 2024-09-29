@@ -28,6 +28,7 @@ OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), PhysicsObjec
    setRadius(r);
    oktaederUnitBall();
    setAcceleration(QVector3D{0, -0.0001f /* "tyngdekraft" */, 0});
+//   setVelocity(QVector3D{-0.001f, 0.0f, -0.001f});
 }
 
 //!//! \brief OctaBall::~OctaBall() virtual destructor

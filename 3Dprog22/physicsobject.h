@@ -21,6 +21,7 @@ public:
     float getRadius() override;
     void setRadius(float r);
     void move(float dx, float dy, float dz) override;
+    void move(QVector3D v) override;
 
     virtual int type() {} // 0 - plane, 1 - ball, 2 - collisionHandler
 };

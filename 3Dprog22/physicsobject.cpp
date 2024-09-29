@@ -59,3 +59,11 @@ void PhysicsObject::move(float dx, float dy, float dz)
     mMatrix.translate(dx, dy, dz);
 }
 
+void PhysicsObject::move(QVector3D v)
+{
+    mx += v.x();
+    my += v.y();
+    mz += v.z();
+    mMatrix.translate(v.x(), v.y(), v.z());
+}
+
