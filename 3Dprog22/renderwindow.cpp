@@ -13,7 +13,6 @@
 
 #include <string>
 
-#include "bouncybox.h"
 #include "disc.h"
 #include "graph.h"
 #include "heightmap.h"
@@ -66,6 +65,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // OctaBall Object
     ball = new OctaBall(2, 0.5f);
+    ball->move(0.0f, 0.0f, 0.0f);
     mObjects.push_back(ball);
     mPhysics.push_back(ball);
 //    mCollisionHandler->addBall(ball);
@@ -76,11 +76,27 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(new TriangleSurface());
 
     // Adding Plane Object to mObject
-    plane = new Plane(5.0f, 0.0f, 5.0f);
-    plane->move(0.0f, -5.0f, 0.0f);
-    mObjects.push_back(plane);
-    mPhysics.push_back(plane);
-//    mCollisionHandler->addWall(plane);
+    plane.push_back(new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f)));
+    plane.back()->move(0.0f, -0.5f, 0.0f);
+    mObjects.push_back(plane.back());
+    mPhysics.push_back(plane.back());
+    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f)));
+    plane.back()->move(0.0f, 0.0f, 5.0f);
+    mObjects.push_back(plane.back());
+    mPhysics.push_back(plane.back());
+    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f, 0.5f, 5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f,-0.5f,-5.0f)));
+    plane.back()->move(5.0f, 0.0f, 0.0f);
+    mObjects.push_back(plane.back());
+    mPhysics.push_back(plane.back());
+    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f)));
+    plane.back()->move(0.0f, 0.0f,-5.0f);
+    mObjects.push_back(plane.back());
+    mPhysics.push_back(plane.back());
+    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f,-0.5f,-5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f, 0.5f, 5.0f)));
+    plane.back()->move(-5.0f, 0.0f, 0.0f);
+    mObjects.push_back(plane.back());
+    mPhysics.push_back(plane.back());
+
 
     // Setting up Height Map and adding it to mObjects
 //    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
@@ -266,7 +282,7 @@ void RenderWindow::render()
 
     //the actual draw call(s)
     for (auto it = mObjects.begin(); it != mObjects.end(); it++)
-//        if ((*it) != mio && (*it) != plane && (*it) != heightMap)
+//        if ((*it) != mio && (*it) != heightMap)
             (*it)->draw(mMatrixUniform0);
 
     // Draws all objects using phong shading

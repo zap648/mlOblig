@@ -8,7 +8,8 @@ class Plane : public PhysicsObject
 {
 public:
     Plane();
-    Plane(float x, float y, float z);
+    Plane(QVector2D size, QQuaternion rotation); // Defunct
+    Plane(QVector3D V0, QVector3D V1, QVector3D V2, QVector3D V3);
     ~Plane();
 
     void init() override;
@@ -17,8 +18,9 @@ public:
 
     QVector3D getNormal();
     float distanceFromPoint(QVector3D point);
+    void Rotate(std::vector<Vertex> vertices, QQuaternion rotation);
 
-    float width; float height; float length;
+    QVector2D size; QQuaternion rotation;
 private:
     float mx, my, mz, mr;
     QVector3D normal;

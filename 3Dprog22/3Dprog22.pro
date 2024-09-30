@@ -6,7 +6,6 @@ CONFIG      += c++17
 TARGET      = 3D-programmering
 
 SOURCES += main.cpp \
-    bouncybox.cpp \
     camera.cpp \
     collisionhandler.cpp \
     controller.cpp \
@@ -36,7 +35,6 @@ SOURCES += main.cpp \
     xyz.cpp
 
 HEADERS += \
-    bouncybox.h \
     camera.h \
     collisionhandler.h \
     controller.h \

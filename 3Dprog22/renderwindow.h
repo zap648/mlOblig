@@ -57,7 +57,7 @@ private:
     std::vector<VisualObject*> mEnemies;
     std::vector<PhysicsObject*> mPhysics;
     VisualObject* mio;      //member interactive object
-    Plane* plane;
+    QVector<Plane*> plane;
     VisualObject* xyz;
     VisualObject* heightMap;
     Camera mCamera;

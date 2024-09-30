@@ -23,21 +23,23 @@ Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
 }
 
 // Creates a custom Plane
-Plane::Plane(float w, float h, float l) : mx{0.0f}, my{0.0f}, mz{0.0f}
+Plane::Plane(QVector2D s, QQuaternion r) : mx{0.0f}, my{0.0f}, mz{0.0f}
 {
-    w /= 2;
-    h /= 2;
-    l /= 2;
+    float x = s.x();
+    float y = s.y();
 
-    width = w;
-    height = h;
-    length = l;
+    size = QVector2D(x, y);
+    rotation = r;
+
+    x /= 2;
+    y /= 2;
+
     // Required Vertices
     //     v   x  y  z     r     g     b     u     v
-    Vertex v0{-w, h,-l, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
-    Vertex v1{ w, h,-l, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
-    Vertex v2{ w,-h, l, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
-    Vertex v3{-w,-h, l, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+    Vertex v0{-x, 0, y, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{ x, 0, y, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v2{ x, 0,-y, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
+    Vertex v3{-x, 0,-y, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
 
     mVertices.insert(mVertices.end(),
                      {
@@ -45,8 +47,31 @@ Plane::Plane(float w, float h, float l) : mx{0.0f}, my{0.0f}, mz{0.0f}
                      v0, v2, v3,    // Plane quad_2/2
                      });
 
+    normal = getVectorNormal(v0, v3, v2);
+
     mr = 0.1f;
-    normal = getVectorNormal(v0, v1, v2);
+
+    mMatrix.setToIdentity();
+    mMatrix.rotate(r);
+}
+
+Plane::Plane(QVector3D V0, QVector3D V1, QVector3D V2, QVector3D V3)
+{
+    //     v     x       y       z     r     g     b     u     v
+    Vertex v0{V0.x(), V0.y(), V0.z(), 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{V1.x(), V1.y(), V1.z(), 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v2{V2.x(), V2.y(), V2.z(), 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
+    Vertex v3{V3.x(), V3.y(), V3.z(), 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+
+    mVertices.insert(mVertices.end(),
+                     {
+                     v0, v1, v2,    // Plane quad_1/2
+                     v0, v2, v3,    // Plane quad_2/2
+                     });
+
+    normal = getVectorNormal(v0, v1, v2); // Assuming you made the vertices clock-wise
+
+    mr = 0.1f;
 
     mMatrix.setToIdentity();
 }
