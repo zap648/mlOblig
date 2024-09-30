@@ -51,7 +51,7 @@ void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
                     distance = pObjects[i]->getPosition().distanceToPoint(pObjects[j]->getPosition());
                 // mLogger->logText(std::to_string(distance));
 
-                if (distance < pObjects[i]->getRadius())
+                if (distance < pObjects[i]->getRadius() + pObjects[j]->getRadius())
                 {
                     Collide(pObjects[i], pObjects[j]);
                 }
@@ -81,28 +81,23 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
             BallWallCollision((OctaBall *) object1, (Plane *) object2);
         }
     }
-//    else if ((object1->type() == 1 && object2->type() == 1))
-//    {
-//        mLogger->logText("Collision!");
-//        BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
-//    }
+    // viss begge objekta er baller (1)
+    else if ((object1->type() == 1 && object2->type() == 1))
+    {
+        BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
+    }
 }
 
 void CollisionHandler::BallWallCollision(OctaBall* ball, Plane* wall)
 {
-    // Obs! Collide-funksjonen må endre seg til å kunne regne ut avstanden fra ballen til det nærmeste punktet på planet
-    float distance = wall->distanceFromPoint(ball->getPosition());
-//    distance -= ball->getRadius();
-
+    // Spretter ballen vekk fra ballen på samme måte som lys reflekteres fra speil
+    // Grader på inngangsvektoren blir reversert til å bli speilvendt i forhold til normalen
     ball->setVelocity(-2 * QVector3D().dotProduct(wall->getNormal(), ball->getVelocity()) * wall->getNormal() + ball->getVelocity());
 
-    // Ballen får normalen til planet og går oppover like langt som den gikk ned i planet
-    // Eks: Viss ballen gikk -0.3 enheter under planet, skal ballen nå være 0.3 enheter over planet, i retning mot normalen
-    // x og y retning (i forhold til normalen) skal være den samme
+    // Regner ut avstanden fra ballen til det nærmeste punktet på planet
+    float distance = wall->distanceFromPoint(ball->getPosition());
+    // Dytter ballen ut fra veggen like mye som han gikk inn i veggen
     ball->move(wall->getNormal() * (distance - ball->getRadius()));
-
-    // Uferdig, ballen skal etter kollisjon endre hastighetvektoren til å gå fra veggen, men uten å endre x,z fartene (i forhold til normalen)
-//    ball->setVelocity(ball->getVelocity() * wallNormal); // Vil ikke virke
 }
 
 void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
@@ -110,12 +105,14 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     // Likt som i BallWallCollision, skal ballene vekk fra ballen like langt som de gikk inn i hverandre
     // "Normalen" i dette tilfellet vil være fra ballen sitt senter til senteret i den andre ballen (.normalized())
     // da de støtte på hverandre, slik at kollisjonen er litt mer dynamisk enn med en vegg
+    mLogger->logText("Collision!");
 
     //    mLogger->logText("New velocity is " + std::to_string(object1->getVelocity().y()) + " and " + std::to_string(object2->getVelocity().y()));
 
-    // Ballen skal også skifte hastighetvektor til å fortsete i retning fra kollisjonspunktet.
+    // Ballen skal også skifte hastighetvektor til å fortsette i retning fra kollisjonspunktet.
     // Jeg følger formlene som blir vist i 9.7.5 (hvor n er normalen funnet i forrige kommentar og d som er avstanden mellom ballene da de kolliderte)
     // og endrer hastighetsvektoren til summen
+
 }
 
 int CollisionHandler::type()

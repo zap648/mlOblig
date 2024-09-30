@@ -68,6 +68,16 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     ball->move(0.0f, 0.0f, 0.0f);
     mObjects.push_back(ball);
     mPhysics.push_back(ball);
+
+    ball = new OctaBall(2, 0.5f);
+    ball->move(2.0f, 0.0f,-3.0f);
+    mObjects.push_back(ball);
+    mPhysics.push_back(ball);
+
+    ball = new OctaBall(2, 0.5f);
+    ball->move(4.0f, 0.0f, 2.0f);
+    mObjects.push_back(ball);
+    mPhysics.push_back(ball);
 //    mCollisionHandler->addBall(ball);
 
 //    mCollisionHandler->pObjects.push_back(mPhysics.back());

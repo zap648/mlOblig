@@ -16,6 +16,7 @@ Plane::Plane() : mx{0.0f}, my{0.0f}, mz{0.0f}
                      v0, v2, v3,    // Plane quad_2/2
                      });
 
+    setRadius(0);
     mr = 0.1f;
     normal = getVectorNormal(v0, v1, v2);
 
@@ -49,6 +50,7 @@ Plane::Plane(QVector2D s, QQuaternion r) : mx{0.0f}, my{0.0f}, mz{0.0f}
 
     normal = getVectorNormal(v0, v3, v2);
 
+    setRadius(0);
     mr = 0.1f;
 
     mMatrix.setToIdentity();
@@ -71,6 +73,7 @@ Plane::Plane(QVector3D V0, QVector3D V1, QVector3D V2, QVector3D V3)
 
     normal = getVectorNormal(v0, v1, v2); // Assuming you made the vertices clock-wise
 
+    setRadius(0);
     mr = 0.1f;
 
     mMatrix.setToIdentity();
