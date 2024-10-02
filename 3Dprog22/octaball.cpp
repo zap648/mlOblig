@@ -27,7 +27,7 @@ OctaBall::OctaBall(int n, float r) : m_rekursjoner(n), m_indeks(0), PhysicsObjec
    mVertices.reserve(3 * 8 * pow(4, m_rekursjoner));
    setRadius(r);
    oktaederUnitBall();
-   setAcceleration(QVector3D{0.001f, -0.0001f /* "tyngdekraft" */, 0.0017f});
+//   setAcceleration(QVector3D{0.001f, -0.0001f /* "tyngdekraft" */, 0.0017f});
    setVelocity(QVector3D{-0.05f, 0.0f, -0.1f});
 }
 
