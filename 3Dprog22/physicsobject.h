@@ -25,6 +25,7 @@ public:
 
     void UpdatePosition();
     QVector3D getPosition() override;
+    std::pair<float, float> getPosition2D();
     float getRadius() override;
     void setRadius(float r);
     void move(float dx, float dy, float dz) override;

@@ -246,6 +246,8 @@ void RenderWindow::init()
         (*it)->mRotate = mRotate;
     }
 
+    mCollisionHandler->addPhysics(mPhysics);
+
     glBindVertexArray(0);
 }
 

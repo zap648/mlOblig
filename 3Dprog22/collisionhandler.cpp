@@ -1,5 +1,4 @@
 #include "collisionhandler.h"
-#include "logger.h"
 
 CollisionHandler::CollisionHandler()
 {
@@ -19,6 +18,21 @@ void CollisionHandler::addBall(OctaBall* ball)
 void CollisionHandler::addWall(Plane* wall)
 {
     walls.push_back(wall);
+}
+
+void CollisionHandler::addPhysics(std::vector<PhysicsObject*> objects)
+{
+    std::string ball{"ball"};
+    std::string wall{"wall"};
+    Point2D a{-5,-5}, b{ 5,-5}, c{ 5, 5}, d{-5, 5};
+    mQuadTre.init(a, b, c, d);
+    for (auto it = objects.begin(); it != objects.end(); it++)
+    {
+        if ((*it)->type() == 0)
+            mQuadTre.insert((*it)->getPosition2D(), wall, **it);
+        else if ((*it)->type() == 1)
+            mQuadTre.insert((*it)->getPosition2D(), ball, **it);
+    }
 }
 
 void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
