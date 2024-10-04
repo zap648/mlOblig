@@ -28,6 +28,7 @@ SOURCES += main.cpp \
     stb_image.cpp \
     tetrahedron.cpp \
     texture.cpp \
+    tquadtre.cpp \
     trianglesurface.cpp \
     trophyobject.cpp \
     vertex.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     stb_image.h \
     tetrahedron.h \
     texture.h \
+    tquadtre.h \
     trianglesurface.h \
     trophyobject.h \
     vertex.h \

@@ -4,6 +4,7 @@
 #include "octaball.h"
 #include "plane.h"
 #include "physicsobject.h"
+#include "tquadtre.h"
 
 class CollisionHandler : protected PhysicsObject
 {

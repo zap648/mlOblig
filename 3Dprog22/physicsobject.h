@@ -6,16 +6,23 @@
 class PhysicsObject : public VisualObject
 {
 private:
-    float mx, my, mz, mr;           // posisjon & radius
-    QVector3D mAcceleration;     // "    "  "    "   "
+    float mx, my, mz, mr;       // posisjon & radius
+    QVector3D mAcceleration;
+    float mMass;
 public:
     PhysicsObject();
     ~PhysicsObject();
 
-    QVector3D getVelocity();
-    QVector3D getAcceleration();
-    void setVelocity(QVector3D v);
-    void setAcceleration(QVector3D a);
+    // Få fysikk
+    float getMass() { return mMass; }
+    QVector3D getVelocity() { return mVelocity; }
+    QVector3D getAcceleration() { return mAcceleration; }
+
+    // Sett fysikk
+    void setMass(float m) { mMass = m; }
+    void setVelocity(QVector3D v) { mVelocity = v; }
+    void setAcceleration(QVector3D a) { mAcceleration = a; }
+
     void UpdatePosition();
     QVector3D getPosition() override;
     float getRadius() override;

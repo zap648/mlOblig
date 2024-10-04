@@ -64,20 +64,21 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
     // OctaBall Object
-    ball = new OctaBall(2, 0.5f);
-    ball->move(0.0f, 0.0f, 0.0f);
+    ball = new OctaBall(3, 0.5f);
+    ball->move(-0.5f, 0.0f,-3.0f);
     mObjects.push_back(ball);
     mPhysics.push_back(ball);
 
-    ball = new OctaBall(2, 0.5f);
-    ball->move(2.0f, 0.0f,-3.0f);
+    ball = new OctaBall(3, 0.5f);
+    ball->move(-1.0f, 0.0f, 2.0f);
     mObjects.push_back(ball);
     mPhysics.push_back(ball);
 
-    ball = new OctaBall(2, 0.5f);
-    ball->move(4.0f, 0.0f, 2.0f);
+    ball = new OctaBall(3, 0.5f);
+    ball->move(-4.0f, 0.0f,-4.0f);
     mObjects.push_back(ball);
     mPhysics.push_back(ball);
+
 //    mCollisionHandler->addBall(ball);
 
 //    mCollisionHandler->pObjects.push_back(mPhysics.back());
@@ -150,7 +151,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    }
 
     // Setting up the camera
-    cameraEye = mio->getPosition() + QVector3D(0, 5.0f, 12.0f);
+    cameraEye = mio->getPosition() + QVector3D(0, 8.0f, 12.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
     cameraAt = mio->getPosition() - QVector3D(0, -10.0f, 0);
     //cameraAt = QVector3D{-7.0f, 0.0f, -5.0f};
@@ -362,7 +363,7 @@ void RenderWindow::render()
 
         mio->setPosition3D(QVector3D{mio->getPosition().x(), playerHeight, mio->getPosition().z()});
 
-        cameraEye = mio->getPosition() + QVector3D(0, 5.0f, 12.0f);
+        cameraEye = mio->getPosition() + QVector3D(0, 8.0f, 12.0f);
         cameraAt = mio->getPosition();
     }
 

@@ -102,50 +102,69 @@ void CollisionHandler::BallWallCollision(OctaBall* ball, Plane* wall)
 
 void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
 {
-    //    mLogger->logText("Collision!");
-
     // Finn kollisjonspunktet
     QVector3D p1 = ball0->getPosition(); // ball0 current pos
     QVector3D vp = ball0->getVelocity(); // ball0 current speedVector
     QVector3D p0 = p1 - vp;              // ball0 previous pos (last frame)
+    float mp = ball0->getMass();         // ball0 mass
     QVector3D q1 = ball1->getPosition(); // ball1 current poc
     QVector3D vq = ball1->getVelocity(); // ball1 current speedVector
     QVector3D q0 = q1 - vq;              // ball1 previous pos (last frame)
+    float mq = ball1->getMass();         // ball1 mass
 
-    QVector3D A = p0 - q0;
+    QVector3D A = p1 - q1;
     QVector3D B = vp - vq;
 
-    float rp = ball0->getRadius();
-    float rq = ball1->getRadius();
-    float t = -( QVector3D().dotProduct(A, B) )
-                - std::sqrt(
-                    std::pow(QVector3D().dotProduct(A, B), 2)
-                    - QVector3D().dotProduct(B, B) * ( QVector3D().dotProduct(A, A) - std::pow((rp + rq), 2) )
-                )
-            / QVector3D().dotProduct(B, B);
-//    float t2 = (-(QVector3D().dotProduct(A, B)))
-//            + std::sqrt(
-//                std::pow(QVector3D().dotProduct(A, B), 2)
-//                - QVector3D().dotProduct(B, B)
-//                * (QVector3D().dotProduct(A, A) - std::pow((rp + rq), 2))
-//                )
-//            / QVector3D().dotProduct(B, B);
-//    float t = QVector3D().dotProduct(A, B) / QVector3D().dotProduct(B, B);
-    QVector3D Pt = p0 + (t * vp);
-    QVector3D Qt = q0 + (t * vq);
+    // Gammel, frustrerende formel
+//    float rp = ball0->getRadius();
+//    float rq = ball1->getRadius();
+////    float t = -( QVector3D().dotProduct(A, B) )
+////            - std::sqrt( std::pow(QVector3D().dotProduct(A, B), 2)
+////                         - QVector3D().dotProduct(B, B) * ( QVector3D().dotProduct(A, A)
+////                                                            - std::pow( (rp + rq), 2) ) )
+////            / QVector3D().dotProduct(B, B); // t = -A^2 - sqrt( AB^2 - B^2 * (A^2 * d^2)) / B^2
+//    float t = -QVector3D().dotProduct(A, B) / QVector3D().dotProduct(B, B);
+//    QVector3D Pt = p0 + (t * vp);
+//    QVector3D Qt = q0 + (t * vq);
 
-    QVector3D N = (Qt - Pt).normalized();
-    // OBS! Finn ut kollisjonspunktet til ballene før du finner ut d!
-//    float d = std::sqrt(QVector3D().dotProduct(A, A)) + 2*t*QVector3D().dotProduct(A, B) + std::pow(t, 2)*QVector3D().dotProduct(B, B);
-    QVector3D d = Qt - Pt;
-//    float v0
+//    QVector3D d = Qt - Pt;
+//    QVector3D N = d.normalized();
 
-    //    mLogger->logText("New velocity is " + std::to_string(object1->getVelocity().y()) + " and " + std::to_string(object2->getVelocity().y()));
+//    QVector3D v0 = ( (mp - mq) / (mp + mq) ) * vp;
+//    v0 += 2 * mq / (mp + mq) * vq;
+//    QVector3D v1 = ( (mq - mp) / (mp + mq) ) * vq;
+//    v1 += 2 * mp / (mp + mq) * vp;
 
-//    ball0->setVelocity(vp*N + vp*d);    // Ball-sprettefunksjonen fungerer ikke
-//    ball1->setVelocity(vq*N - vq*d);
-    ball0->setVelocity(-2 * QVector3D().dotProduct(N, vp) * N + vp); // Men vegg-sprettefunksjonen "fungerer"
-    ball1->setVelocity(-2 * QVector3D().dotProduct(N, vq) * N + vq);
+//    ball0->setVelocity(v0*N + v0*d);
+//    ball1->setVelocity(v1*N - v0*d);
+//    ball0->setVelocity(-2 * QVector3D().dotProduct(N, vp) * N + vp); // Men vegg-sprettefunksjonen "fungerer" (med noen få avvik i spretteretning)
+//    ball1->setVelocity(-2 * QVector3D().dotProduct(N, vq) * N + vq);
+
+    // Ny, enklere formel
+    float dist = A.length();
+    QVector3D impactVector = p1 - q1;
+    float mSum = mp + mq;
+    QVector3D vDiff = vq - vp;
+
+    // Regn ut felles for begge formlene
+    float num = QVector3D().dotProduct(vDiff, impactVector);
+    float den = mSum * dist * dist;
+
+    // Finn fart til ball0
+    QVector3D deltaVA = impactVector;
+    deltaVA *= 2 * mq * num / den;
+    ball0->setVelocity(ball0->getVelocity() + deltaVA);
+
+    // Finn fart til ball1
+    QVector3D deltaVB = impactVector;
+    deltaVB *= -2 * mp * num / den;
+    ball1->setVelocity(ball1->getVelocity() + deltaVB);
+
+//    // Så flytter jeg ballen frå hverandre
+//    // (enkel metode, slik at de ikke like ofte setter seg fast i hverandre)
+//    // Vil gi en liten endring i potensiell energi pga fast akselerasjon
+//    ball0->move(ball0->getVelocity());
+//    ball1->move(ball1->getVelocity());
 }
 
 int CollisionHandler::type()

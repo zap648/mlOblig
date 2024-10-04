@@ -10,26 +10,6 @@ PhysicsObject::~PhysicsObject()
 
 }
 
-QVector3D PhysicsObject::getVelocity()
-{
-    return mVelocity;
-}
-
-QVector3D PhysicsObject::getAcceleration()
-{
-    return mAcceleration;
-}
-
-void PhysicsObject::setVelocity(QVector3D v)
-{
-    mVelocity = v;
-}
-
-void PhysicsObject::setAcceleration(QVector3D a)
-{
-    mAcceleration = a;
-}
-
 void PhysicsObject::UpdatePosition()
 {
     mVelocity += mAcceleration;
