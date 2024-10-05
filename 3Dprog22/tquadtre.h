@@ -6,7 +6,6 @@
 #include <list>
 #include <string>
 #include <iterator>
-
 typedef std::pair<double, double> Point2D;
 
 struct GameObject
@@ -60,7 +59,6 @@ private:
 public:
     QuadTre();
     QuadTre(const Point2D &v1, const Point2D &v2, const Point2D &v3, const Point2D &v4);
-    void init(const Point2D &v1, const Point2D &v2, const Point2D &v3, const Point2D &v4);
     void subDivide(int n);
     void print() const;
     void print_all() const;
@@ -82,19 +80,6 @@ public:
 };
 
 template <class ID, class T>
-QuadTre<ID, T>::QuadTre(const Point2D &v1, const Point2D &v2, const Point2D &v3, const Point2D &v4)
-    : m_a{v1}, m_b{v2}, m_c{v3}, m_d{v4}, m_sv{nullptr}, m_so{nullptr}, m_no{nullptr}, m_nv{nullptr}
-{
-
-}
-
-template <class ID, class T>
-void QuadTre<ID, T>::init(const Point2D &v1, const Point2D &v2, const Point2D &v3, const Point2D &v4)
-{
-    m_a = v1; m_b = v2; m_c = v3; m_d = v4;
-}
-
-template <class ID, class T>
 void QuadTre<ID, T>::subDivide(int n)
 {
     if (n>0)
@@ -114,12 +99,6 @@ void QuadTre<ID, T>::subDivide(int n)
         m_nv = new QuadTre(v4, m, v3, m_d);
         m_nv = subDivide(n-1);
     }
-}
-
-template <class ID, class T>
-bool QuadTre<ID, T>::isLeaf() const
-{
-    return m_sv == nullptr && m_so == nullptr && m_no == nullptr && m_nv == nullptr;
 }
 
 template <class ID, class T>

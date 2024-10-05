@@ -21,11 +21,6 @@ QVector3D PhysicsObject::getPosition()
     return QVector3D{mx, my, mz};
 }
 
-std::pair<float, float> PhysicsObject::getPosition2D()
-{
-    return std::pair<float, float>{mx, mz};
-}
-
 float PhysicsObject::getRadius()
 {
     return mr;
