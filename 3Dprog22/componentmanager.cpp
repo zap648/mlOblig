@@ -1,0 +1,2 @@
+#include "componentmanager.h"
+
