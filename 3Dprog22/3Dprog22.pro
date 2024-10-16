@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     cube.cpp \
     disc.cpp \
     enemyobject.cpp \
+    entity.cpp \
     graph.cpp \
     heightmap.cpp \
     interactiveobject.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     cube.h \
     disc.h \
     enemyobject.h \
+    entity.h \
     graph.h \
     heightmap.h \
     interactiveobject.h \

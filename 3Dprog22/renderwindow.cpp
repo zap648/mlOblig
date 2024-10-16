@@ -64,20 +64,20 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 //    mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
 
     // OctaBall Object
-    ball = new OctaBall(3, 0.5f);
-    ball->move(-0.5f, 0.0f,-3.0f);
-    mObjects.push_back(ball);
-    mPhysics.push_back(ball);
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-0.5f, 0.0f,-3.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
 
-    ball = new OctaBall(3, 0.5f);
-    ball->move(-1.0f, 0.0f, 2.0f);
-    mObjects.push_back(ball);
-    mPhysics.push_back(ball);
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-1.0f, 0.0f, 2.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
 
-    ball = new OctaBall(3, 0.5f);
-    ball->move(-4.0f, 0.0f,-4.0f);
-    mObjects.push_back(ball);
-    mPhysics.push_back(ball);
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-4.0f, 0.0f,-4.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
 
 //    mCollisionHandler->addBall(ball);
 
@@ -91,22 +91,22 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     plane.back()->move(0.0f, -0.5f, 0.0f);
     mObjects.push_back(plane.back());
     mPhysics.push_back(plane.back());
-    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f)));
-    plane.back()->move(0.0f, 0.0f, 5.0f);
-    mObjects.push_back(plane.back());
-    mPhysics.push_back(plane.back());
-    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f, 0.5f, 5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f,-0.5f,-5.0f)));
-    plane.back()->move(5.0f, 0.0f, 0.0f);
-    mObjects.push_back(plane.back());
-    mPhysics.push_back(plane.back());
-    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f)));
-    plane.back()->move(0.0f, 0.0f,-5.0f);
-    mObjects.push_back(plane.back());
-    mPhysics.push_back(plane.back());
-    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f,-0.5f,-5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f, 0.5f, 5.0f)));
-    plane.back()->move(-5.0f, 0.0f, 0.0f);
-    mObjects.push_back(plane.back());
-    mPhysics.push_back(plane.back());
+//    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f)));
+//    plane.back()->move(0.0f, 0.0f, 5.0f);
+//    mObjects.push_back(plane.back());
+//    mPhysics.push_back(plane.back());
+//    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f, 0.5f, 5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f,-0.5f,-5.0f)));
+//    plane.back()->move(5.0f, 0.0f, 0.0f);
+//    mObjects.push_back(plane.back());
+//    mPhysics.push_back(plane.back());
+//    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f)));
+//    plane.back()->move(0.0f, 0.0f,-5.0f);
+//    mObjects.push_back(plane.back());
+//    mPhysics.push_back(plane.back());
+//    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f,-0.5f,-5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f, 0.5f, 5.0f)));
+//    plane.back()->move(-5.0f, 0.0f, 0.0f);
+//    mObjects.push_back(plane.back());
+//    mPhysics.push_back(plane.back());
 
 
     // Setting up Height Map and adding it to mObjects
