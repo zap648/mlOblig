@@ -8,6 +8,8 @@
 #include <vector>
 
 #include "camera.h";
+#include "component.h"
+#include "entity.h"
 #include "plane.h"
 #include "collisionhandler.h"
 #include "controller.h"
@@ -57,6 +59,10 @@ private:
     std::vector<VisualObject*> mEnemies;
     std::vector<PhysicsObject*> mPhysics;
     VisualObject* mio;      //member interactive object
+    Entity* player;
+    std::vector<Entity*> entities;
+    PositionComponent* positionComponent;
+    ComponentManager* componentManager;
     QVector<Plane*> plane;
     VisualObject* xyz;
     VisualObject* heightMap;

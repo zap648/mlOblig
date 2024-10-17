@@ -49,8 +49,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     //This is the matrix used to transform (rotate) the triangle
     //You could do without, but then you have to simplify the shader and shader setup
-//    mMVPmatrix = new QMatrix4x4{};
-//    mMVPmatrix->setToIdentity();    //1, 1, 1, 1 in the diagonal of the matrix
     mPmatrix = new QMatrix4x4{};
     mPmatrix->setToIdentity();
     mVmatrix = new QMatrix4x4{};
@@ -59,60 +57,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
-    // XYZ-axis Object
-//    xyz = new XYZ;
-//    mObjects.push_back(xyz);    // Comment to deactivate, and vice versa
-
-    // OctaBall Object
-//    ball = new OctaBall(3, 0.5f);
-//    ball->move(-0.5f, 0.0f,-3.0f);
-//    mObjects.push_back(ball);
-//    mPhysics.push_back(ball);
-
-//    ball = new OctaBall(3, 0.5f);
-//    ball->move(-1.0f, 0.0f, 2.0f);
-//    mObjects.push_back(ball);
-//    mPhysics.push_back(ball);
-
-//    ball = new OctaBall(3, 0.5f);
-//    ball->move(-4.0f, 0.0f,-4.0f);
-//    mObjects.push_back(ball);
-//    mPhysics.push_back(ball);
-
-//    mCollisionHandler->addBall(ball);
-
-//    mCollisionHandler->pObjects.push_back(mPhysics.back());
-//    mObjects.push_back(new BouncyBox(10.0f, 3.0f, 10.0f, false));
-
-//    mObjects.push_back(new TriangleSurface());
-
     // Adding Plane Object to mObject
     plane.push_back(new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f)));
     plane.back()->move(0.0f, -0.5f, 0.0f);
     mObjects.push_back(plane.back());
-    mPhysics.push_back(plane.back());
-//    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f)));
-//    plane.back()->move(0.0f, 0.0f, 5.0f);
-//    mObjects.push_back(plane.back());
-//    mPhysics.push_back(plane.back());
-//    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f, 0.5f, 5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f,-0.5f,-5.0f)));
-//    plane.back()->move(5.0f, 0.0f, 0.0f);
-//    mObjects.push_back(plane.back());
-//    mPhysics.push_back(plane.back());
-//    plane.push_back(new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f)));
-//    plane.back()->move(0.0f, 0.0f,-5.0f);
-//    mObjects.push_back(plane.back());
-//    mPhysics.push_back(plane.back());
-//    plane.push_back(new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f,-0.5f,-5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f, 0.5f, 5.0f)));
-//    plane.back()->move(-5.0f, 0.0f, 0.0f);
-//    mObjects.push_back(plane.back());
 //    mPhysics.push_back(plane.back());
 
-
-    // Setting up Height Map and adding it to mObjects
-//    heightMap = new HeightMap((char*)("../3Dprog22/heightmap.png"));
-//    heightMap->setPosition3D(QVector3D{0.0f, 0.0f, 0.0f});
-//    mObjects.push_back(heightMap);
 
     // Setting up Light Object and adding it to mObject
     light = new Light;
@@ -125,30 +75,24 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mio = new InteractiveObject("interactiveObject.txt", false);
     mObjects.push_back(mio);
 
-    // Adding Trophies to mTrophies (mObject but for trophies)
-    // Trophies: tObject(x, y, z, radius)
-//    mTrophies.push_back(new TrophyObject(1.5f, 0.0f, -1.5f, 0.2));
+    EntityBuilder entityBuilder;
+    positionComponent = new PositionComponent();
+    componentManager = new ComponentManager();
 
-//    mTrophies.push_back(new TrophyObject(4.5f, 0.0f, 2.3f, 0.2));
+    // Setting up player entity
+    player = new Entity();
+    entityBuilder.AddPositionComponent(
+                *player,
+                0.0f,
+                0.0f,
+                0.0f,
+                *positionComponent,
+                *componentManager
+                );
+    entities.push_back(player);   // entity with Id 0
 
-//    mTrophies.push_back(new TrophyObject(3.2f, 0.0f, -2.5f, 0.2));
-
-    // Add trophy objects into mObjects, and sets render style to visible
-//    for (int i = 0; i < mTrophies.size(); i++)
-//    {
-//        mTrophies[i]->setRenderStyle(0);
-//        mObjects.push_back(mTrophies[i]);
-//    }
-//    trophyCount = 0;
-
-//    mEnemies.push_back(new EnemyObject(-1.5f, 0.0f, -1.5f, 0.2));
-
-    // Add enemy objects
-//    for (int i = 0; i < mEnemies.size(); i++)
-//    {
-//        mEnemies[i]->setRenderStyle(0);
-//        mObjects.push_back(mEnemies[i]);
-//    }
+    // Setting up enemy entity
+    entities.push_back(new Entity());   // Entity with Id 1
 
     // Setting up the camera
     cameraEye = mio->getPosition() + QVector3D(0, 8.0f, 12.0f);
@@ -171,6 +115,8 @@ void RenderWindow::init()
     //Get the instance of the utility Output logger
     //Have to do this, else program will crash (or you have to put in nullptr tests...)
     mLogger = Logger::getInstance();
+
+    mLogger->logText("First is: " + std::to_string(entities.front()->Id) + ", Second is: " + std::to_string(entities.back()->Id));
 
     //Connect the gameloop timer to the render function:
     //This makes our render loop

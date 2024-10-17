@@ -8,7 +8,8 @@ TARGET      = 3D-programmering
 SOURCES += main.cpp \
     camera.cpp \
     collisionhandler.cpp \
-    componentmanager.cpp \
+    component.cpp \
+    componentsystem.cpp \
     controller.cpp \
     cube.cpp \
     disc.cpp \
@@ -40,7 +41,8 @@ SOURCES += main.cpp \
 HEADERS += \
     camera.h \
     collisionhandler.h \
-    componentmanager.h \
+    component.h \
+    componentsystem.h \
     controller.h \
     cube.h \
     disc.h \
