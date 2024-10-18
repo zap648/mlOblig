@@ -81,42 +81,88 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     healthComponent = new HealthComponent();
     damageComponent = new DamageComponent();
     inventoryComponent = new InventoryComponent();
+    itemComponent = new ItemComponent();
 
     componentManager = new ComponentManager();
     movementSystem = new MovementSystem();
+    damageSystem = new DamageSystem();
+    inventorySystem = new InventorySystem();
 
     // Setting up player entity
     player = new Entity();
     entities.push_back(player);   // entity with Id 0
 
+    // Add position component to entities (player + enemy/enemies)
+    entityBuilder.AddPositionComponent(
+                *player,
+                0.0f, 0.0f, 0.0f,
+                *positionComponent,
+                *componentManager);
+    // Add health component to entities (player + enemy/enemies)
+    entityBuilder.AddHealthComponent(
+                *player,
+                100,
+                *healthComponent,
+                *componentManager);
+    // Add damage component to entities (player + enemy/enemies)
+    entityBuilder.AddDamageComponent(
+                *player,
+                10, 1.0f,
+                *damageComponent,
+                *componentManager);
+    // Add inventory component to entities (player + enemy/enemies)
+    entityBuilder.AddInventoryComponent(
+                *player,
+                *itemComponent,
+                *inventoryComponent,
+                *componentManager);
+
+    // Add entity to movementSystem (make them movable)
+    movementSystem->AddEntity(*player, *componentManager);
+    damageSystem->AddEntity(*player, *componentManager);
+
     // Setting up enemy entity
     entities.push_back(new Entity());   // Entity with Id 1
+    // Add position component to entities
+    entityBuilder.AddPositionComponent(
+                *entities.back(),
+                5.0f, 0.0f, 0.0f,
+                *positionComponent,
+                *componentManager);
+    // Add health component to entities
+    entityBuilder.AddHealthComponent(
+                *entities.back(),
+                100,
+                *healthComponent,
+                *componentManager);
+    // Add damage component to entities
+    entityBuilder.AddDamageComponent(
+                *entities.back(),
+                1, 1.0f,
+                *damageComponent,
+                *componentManager);
 
-    for (int i = 0; i < entities.size(); i++)
-    {
-        entityBuilder.AddPositionComponent(
-                    *entities[i],
-                    0.0f,
-                    0.0f,
-                    0.0f,
-                    *positionComponent,
-                    *componentManager);
-        entityBuilder.AddHealthComponent(
-                    *entities[i],
-                    100,
-                    *healthComponent,
-                    *componentManager);
-        entityBuilder.AddDamageComponent(
-                    *entities[i],
-                    10,
-                    *damageComponent,
-                    *componentManager);
-        entityBuilder.AddInventoryComponent(
-                    *entities[i],
-                    *inventoryComponent,
-                    *componentManager);
-        movementSystem->AddEntity(*entities[i], *componentManager);
-    }
+    // Add entity to movementSystem (make them movable)
+    movementSystem->AddEntity(*entities.back(), *componentManager);
+    damageSystem->AddEntity(*entities.back(), *componentManager);
+
+    // Setting up item entity
+    entities.push_back(new Entity());
+    // Add position component to entity
+    entityBuilder.AddPositionComponent(
+                *entities.back(),
+                -5.0f, 0.0f, 0.0f,
+                *positionComponent,
+                *componentManager);
+    // Add item component to entity
+    std::string coin = "Coin";
+    entityBuilder.AddItemComponent(
+                *entities.back(),
+                coin,
+                *itemComponent,
+                *componentManager);
+
+    inventorySystem->AddEntity(*entities.back(), *componentManager);
 
     int playerPosIndex = componentManager->components.at(player->Id);
     // Setting up the camera
@@ -261,6 +307,10 @@ void RenderWindow::render()
     else    // If no interactive object
         mCamera.lookAt(cameraEye, QVector3D{0,0,0}, cameraUp);
 
+    // Updating component systems
+    movementSystem->Update(*positionComponent);
+    damageSystem->Update(*damageComponent, (float)(mTimeStart.elapsed()) / 1000 /* milliseconds to seconds*/);
+
     light->mLightStrength = lightStrength;
     light->mSpecularStrength = specularStrength;
 
@@ -330,33 +380,30 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
-    int playerPosIndex = componentManager->components.at(player->Id);
+    int playerIndex = componentManager->components.at(player->Id);
 
     // Moving player entity
-
-    movementSystem->Update(*positionComponent);
-
     if (player)
     {
         // Movement in the x-axis
-        positionComponent->dx[playerPosIndex] = 0.0f;
-        if (controller.moveRight)   positionComponent->dx[playerPosIndex] += 0.1f;
-        if (controller.moveLeft)    positionComponent->dx[playerPosIndex] -= 0.1f;
+        positionComponent->dx[playerIndex] = 0.0f;
+        if (controller.moveRight)   positionComponent->dx[playerIndex] += 0.1f;
+        if (controller.moveLeft)    positionComponent->dx[playerIndex] -= 0.1f;
 
         // Movement in the y-axis
-        positionComponent->dy[playerPosIndex] = 0.0f;
-        if (controller.moveUp)      positionComponent->dy[playerPosIndex] += 0.1f;
-        if (controller.moveDown)    positionComponent->dy[playerPosIndex] -= 0.1f;
+        positionComponent->dy[playerIndex] = 0.0f;
+        if (controller.moveUp)      positionComponent->dy[playerIndex] += 0.1f;
+        if (controller.moveDown)    positionComponent->dy[playerIndex] -= 0.1f;
 
         // Movement in the z-axis
-        positionComponent->dz[playerPosIndex] = 0.0f;
-        if (controller.moveBack)    positionComponent->dz[playerPosIndex] += 0.1f;
-        if (controller.moveFor)     positionComponent->dz[playerPosIndex] -= 0.1f;
+        positionComponent->dz[playerIndex] = 0.0f;
+        if (controller.moveBack)    positionComponent->dz[playerIndex] += 0.1f;
+        if (controller.moveFor)     positionComponent->dz[playerIndex] -= 0.1f;
 
         cameraEye = QVector3D(
-                    positionComponent->x[playerPosIndex],
-                    positionComponent->y[playerPosIndex],
-                    positionComponent->z[playerPosIndex])
+                    positionComponent->x[playerIndex],
+                    positionComponent->y[playerIndex],
+                    positionComponent->z[playerIndex])
                 + QVector3D(0, 6.0f, 10.0f);
     }
 
@@ -371,103 +418,55 @@ void RenderWindow::render()
         specularStrength = 0.0f;
     }
 
+    QVector3D playerPosition = QVector3D(positionComponent->x[playerIndex], positionComponent->y[playerIndex],positionComponent->z[playerIndex]);
+
+    // Checks for collisions
+    for (int i = 1; i < entities.size(); i++) // entities 0 is player, so ignore player OBS.
     {
-//        mCollisionHandler->DetectWallCollision();
-        mCollisionHandler->DetectCollision(mPhysics);
+        int entityPosIndex = componentManager->components.at(entities[i]->Id);
+        // QVector3D has a working distance function
+        QVector3D enemyPosition = QVector3D(positionComponent->x[entityPosIndex],
+                                            positionComponent->y[entityPosIndex],
+                                            positionComponent->z[entityPosIndex]);
 
-//        mLogger->logText("Entered DetectCollision");
-//        if (mPhysics.size() > 1)
+        float distance = enemyPosition.distanceToPoint(playerPosition);
+
+        // Checking if this entity contains a Damage Component
+        if (std::find(entities[i]->m_componentMask.begin(), entities[i]->m_componentMask.begin(), ComponentType::Damage) != entities[i]->m_componentMask.end())
+        {
+            // If the entity is close enough & its damage component is no longer on cooldown
+            if (distance < 1.0f && damageComponent->cooldown[i] < 0.0f)
+            {
+                damageSystem->Damage(*entities[i], *player, *damageComponent, *healthComponent);
+                mLogger->logText("Player Hit! Player health is now " + std::to_string(healthComponent->health[playerIndex]));
+
+                if (healthComponent->health[playerIndex] <= 0)
+                {
+                    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+                    qApp->quit();
+                }
+            }
+        }
+
+        // Minor pointing issue with  :)
+//        // Checking if this entity contains a Damage Component
+//        if (std::find(entities[i]->m_componentMask.begin(), entities[i]->m_componentMask.begin(), ComponentType::Item) != entities[i]->m_componentMask.end())
 //        {
-//            std::vector<std::vector<int>> tracker;
-//            mLogger->logText("mPhysics is " + std::to_string(mPhysics.size()) + " units long");
-//            // assume the radius is 1
-//            for (int i = 0; mPhysics.size() > i; i++)
+//            // If the entity is close enough
+//            if (distance < 1.0f)
 //            {
-//                tracker.push_back(*new std::vector<int>());
-//                for (int j = 0; j <= i; j++)
-//                    tracker[i].push_back(j);
+//                int entityIndex = componentManager->GetComponent(entities[i]->Id);
 
-//                for (int j = 0; mPhysics.size() > j; j++)
-//                {
-//                    if (std::find(tracker[i].begin(), tracker[i].end(), j) != tracker[i].end())
-//                    {
-//                        continue;
-//                    }
-//                    float distance = mPhysics[i]->getPosition().distanceToPoint(mPhysics[j]->getPosition());
-//                    mLogger->logText(std::to_string(distance));
-//                    if (distance < mPhysics[i]->getRadius())
-//                    {
-//                        mPhysics[i]->setVelocity(mPhysics[i]->getVelocity() * -1);
-//                        mPhysics[j]->setVelocity(mPhysics[j]->getVelocity() * -1);
-////                        mLogger->logText("Velocity is " + std::to_string(mPhysics[i]->getVelocity().y()) + " or " + std::to_string(mPhysics[j]->getVelocity().y()));
-//                        mLogger->logText("Collision!");
-//                    }
-//                }
-//            }
-//        }
-//        else
-//        {
-//            mLogger->logText("pObjects is not larger than 1");
-//        }
-//        mLogger->logText("Exited DetectCollision");
-    }
+//                // Pick up entity item!
+//                inventorySystem->PickUp(*entities[i], *player, *inventoryComponent, *itemComponent); // OBS! Note to self: Give these components in the initialization
+//                mLogger->logText("Pickup! Player has picked up a " + itemComponent->item[entityIndex]);
 
-    // Checks for collisions
-//    for (int i = 0; i < mTrophies.size(); i++)
-//    {
-//        float distance = mTrophies[i]->getPosition().distanceToPoint(mio->getPosition());
-////        mLogger->logText(std::to_string(distance));
-////        mLogger->logText(std::to_string(mio->getRadius()));
-////        mLogger->logText(std::to_string(mTrophies[i]->getRadius()));
-
-//        if (distance < mio->getRadius() + mTrophies[i]->getRadius() && mTrophies[i]->getRenderStyle() == 0)
-//        {
-//            mTrophies[i]->setRenderStyle(1);
-//            trophyCount++;
-//            mLogger->logText("Trophy Count: " + std::to_string(trophyCount));
-//        }
-//    }
-
-    // Checks for collisions
-//    for (int i = 0; i < mEnemies.size(); i++)
-//    {
-//        float distance = mEnemies[i]->getPosition().distanceToPoint(mio->getPosition());
-
-//        if (distance < mio->getRadius() + mEnemies[i]->getRadius() && mEnemies[i]->getRenderStyle() == 0)
-//        {
-//            mEnemies[i]->setRenderStyle(1);
-//            qApp->quit();
-//            QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-//            mLogger->logText("Enemy Hit!");
-//        }
-//    }
-
-
-    // Checks for collisions
-    {
-//        float distance = plane->getPosition().distanceToPoint(mio->getPosition());
-
-//                mLogger->logText(std::to_string(distance));
-//                mLogger->logText(std::to_string(mio->getRadius()));
-//                mLogger->logText(std::to_string(plane->getRadius()));
-
-//        if (distance < mio->getRadius() + plane->getRadius())
-//        {
-//            if (lightSwitch)
-//            {
-//                lightSwitch = false;
-//                plane->setPosition3D({-2.0f, 0.0f, 2.0f});
-//            }
-//            else if (!lightSwitch)
-//            {
-//                lightSwitch = true;
-//                plane->setPosition3D({2.0f, 0.0f, 2.0f});
+//                positionComponent->y[entityPosIndex] -= 5.0f; // Moves item 5 units down to "hide" it
 //            }
 //        }
     }
 
     //just to make the triangle rotate - tweak this:
-    //                   degree, x,   y,   z -axis
     for (auto it = mObjects.begin(); it != mObjects.end(); it++)
         (*it)->mRotate = mRotate;
 }

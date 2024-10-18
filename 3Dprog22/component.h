@@ -10,7 +10,8 @@ enum class ComponentType // I'm faking reflection due to c++ doesn't let me :)
     Position,
     Health,
     Damage,
-    Inventory
+    Inventory,
+    Item
 };
 
 class Component
@@ -50,6 +51,7 @@ struct HealthComponent : virtual Component
 struct DamageComponent : virtual Component
 {
     std::vector<int> damage;
+    std::vector<float> cooldown;
 };
 
 struct ItemComponent : virtual Component

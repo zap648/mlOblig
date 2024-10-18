@@ -60,14 +60,23 @@ private:
     std::vector<VisualObject*> mEnemies;
     std::vector<PhysicsObject*> mPhysics;
     VisualObject* mio;      //member interactive object
+
+    // ECS
+    // Entities
     Entity* player;
     std::vector<Entity*> entities;
+    // Components
     PositionComponent* positionComponent;
     HealthComponent* healthComponent;
     DamageComponent* damageComponent;
+    ItemComponent* itemComponent;
     InventoryComponent* inventoryComponent;
     ComponentManager* componentManager;
+    // Systems
     MovementSystem* movementSystem;
+    DamageSystem* damageSystem;
+    InventorySystem* inventorySystem;
+
     QVector<Plane*> plane;
     VisualObject* xyz;
     VisualObject* heightMap;

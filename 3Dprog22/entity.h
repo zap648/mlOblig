@@ -44,20 +44,31 @@ public:
     }
 
     void AddDamageComponent(Entity& entity,
-                            int dmg,
+                            int dmg, float cooldwn,
                             DamageComponent& dmgComp, ComponentManager& compManager)
     {
         entity.m_componentMask.insert(ComponentType::Damage);
         dmgComp.damage.push_back(dmg);
+        dmgComp.cooldown.push_back(cooldwn);
         compManager.components[entity.Id] = dmgComp.damage.size() - 1;
     }
 
     void AddInventoryComponent(Entity& entity,
+                               ItemComponent& itemComp,
                                InventoryComponent& invComp, ComponentManager& compManager)
     {
         entity.m_componentMask.insert(ComponentType::Inventory);
-        invComp.item.push_back(*new std::vector<std::string>());
-        compManager.components[entity.Id] = invComp.item.size() - 1;
+        invComp.inventory.push_back(itemComp);
+        compManager.components[entity.Id] = invComp.inventory.size() - 1;
+    }
+
+    void AddItemComponent(Entity& entity,
+                          std::string& item,
+                          ItemComponent& itemComp, ComponentManager& compManager)
+    {
+        entity.m_componentMask.insert(ComponentType::Item);
+        itemComp.item.push_back(item);
+        compManager.components[entity.Id] = itemComp.item.size() - 1;
     }
 };
 
