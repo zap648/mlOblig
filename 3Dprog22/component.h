@@ -33,9 +33,14 @@ public:
 class PositionComponent : virtual Component
 {
 public:
+    // position axis
     std::vector<float> x;
     std::vector<float> y;
     std::vector<float> z;
+    // direction axis
+    std::vector<float> dx;
+    std::vector<float> dy;
+    std::vector<float> dz;
 };
 
 class HealthComponent : virtual Component

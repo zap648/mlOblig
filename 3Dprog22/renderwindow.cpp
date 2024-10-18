@@ -75,9 +75,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mio = new InteractiveObject("interactiveObject.txt", false);
     mObjects.push_back(mio);
 
+    // Setting up ECS
     EntityBuilder entityBuilder;
     positionComponent = new PositionComponent();
+    healthComponent = new HealthComponent();
+    damageComponent = new DamageComponent();
+    inventoryComponent = new InventoryComponent();
+
     componentManager = new ComponentManager();
+    movementSystem = new MovementSystem();
 
     // Setting up player entity
     player = new Entity();
@@ -87,8 +93,13 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
                 0.0f,
                 0.0f,
                 *positionComponent,
-                *componentManager
-                );
+                *componentManager);
+    entityBuilder.AddHealthComponent(
+                *player,
+                100,
+                *healthComponent,
+                *componentManager);
+    movementSystem->AddEntity(*player, *componentManager);
     entities.push_back(player);   // entity with Id 0
 
     // Setting up enemy entity
@@ -308,15 +319,26 @@ void RenderWindow::render()
 
     int playerPosIndex = componentManager->components.at(player->Id);
 
-    //Movement
+    // Moving player entity
+
+    movementSystem->Update(*positionComponent);
+
     if (player)
     {
-        if (controller.moveLeft)    positionComponent->x[playerPosIndex] -= 0.1f;
-        if (controller.moveRight)   positionComponent->x[playerPosIndex] += 0.1f;
-        if (controller.moveUp)      positionComponent->y[playerPosIndex] += 0.1f;
-        if (controller.moveDown)    positionComponent->y[playerPosIndex] -= 0.1f;
-        if (controller.moveFor)     positionComponent->z[playerPosIndex] -= 0.1f;
-        if (controller.moveBack)    positionComponent->z[playerPosIndex] += 0.1f;
+        // Movement in the x-axis
+        positionComponent->dx[playerPosIndex] = 0.0f;
+        if (controller.moveRight)   positionComponent->dx[playerPosIndex] += 0.1f;
+        if (controller.moveLeft)    positionComponent->dx[playerPosIndex] -= 0.1f;
+
+        // Movement in the y-axis
+        positionComponent->dy[playerPosIndex] = 0.0f;
+        if (controller.moveUp)      positionComponent->dy[playerPosIndex] += 0.1f;
+        if (controller.moveDown)    positionComponent->dy[playerPosIndex] -= 0.1f;
+
+        // Movement in the z-axis
+        positionComponent->dz[playerPosIndex] = 0.0f;
+        if (controller.moveBack)    positionComponent->dz[playerPosIndex] += 0.1f;
+        if (controller.moveFor)     positionComponent->dz[playerPosIndex] -= 0.1f;
 
         cameraEye = QVector3D(
                     positionComponent->x[playerPosIndex],

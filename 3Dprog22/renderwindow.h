@@ -63,8 +63,11 @@ private:
     Entity* player;
     std::vector<Entity*> entities;
     PositionComponent* positionComponent;
+    HealthComponent* healthComponent;
+    DamageComponent* damageComponent;
+    InventoryComponent* inventoryComponent;
     ComponentManager* componentManager;
-    ComponentSystem* componentSystem;
+    MovementSystem* movementSystem;
     QVector<Plane*> plane;
     VisualObject* xyz;
     VisualObject* heightMap;
