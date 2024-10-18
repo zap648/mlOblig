@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "camera.h";
+#include "componentsystem.h"
 #include "component.h"
 #include "entity.h"
 #include "plane.h"
@@ -63,6 +64,7 @@ private:
     std::vector<Entity*> entities;
     PositionComponent* positionComponent;
     ComponentManager* componentManager;
+    ComponentSystem* componentSystem;
     QVector<Plane*> plane;
     VisualObject* xyz;
     VisualObject* heightMap;

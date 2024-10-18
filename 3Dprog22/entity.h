@@ -31,7 +31,7 @@ public:
             PositionComponent& posComp,
             ComponentManager& compManager)
     {
-        entity.m_componentMask.insert(ComponentType::PositionComponent);
+        entity.m_componentMask.insert(ComponentType::Position);
         posComp.x.push_back(X);
         posComp.y.push_back(Y);
         posComp.z.push_back(Z);

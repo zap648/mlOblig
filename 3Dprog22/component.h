@@ -7,10 +7,10 @@
 
 enum class ComponentType // I'm faking reflection due to c++ doesn't let me :)
 {
-    PositionComponent,
-    HealthComponent,
-    DamageComponent,
-    InventoryComponent
+    Position,
+    Health,
+    Damage,
+    Inventory
 };
 
 class Component

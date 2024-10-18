@@ -16,18 +16,19 @@ class MovementSystem : ComponentSystem
 private:
     std::vector<int> positionIds;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager);
+    void AddEntity(const Entity &entity, const ComponentManager& componentManager)
+    {
+
+    }
     void RemoveEntity(int entityId, const ComponentManager& componentManager);
     void Update(PositionComponent &positions)
     {
         for (int i = 0; i < positionIds.size(); i++)
         {
             int positionIndex = positionIds[i];
-            float x = positions.x[positionIndex];
-            float y = positions.y[positionIndex];
-            float z = positions.z[positionIndex];
-
-            x += 0.01f; y += 0.0f; z += 0.0f;
+            positions.x[positionIndex] += 0.01f;
+            positions.y[positionIndex] += 0.0f;
+            positions.z[positionIndex] += 0.0f;
         }
     }
 };

@@ -92,12 +92,21 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     entities.push_back(player);   // entity with Id 0
 
     // Setting up enemy entity
-    entities.push_back(new Entity());   // Entity with Id 1
+//    entities.push_back(new Entity());   // Entity with Id 1
 
+    int playerPosIndex = componentManager->components.at(player->Id);
     // Setting up the camera
-    cameraEye = mio->getPosition() + QVector3D(0, 8.0f, 12.0f);
+    cameraEye = QVector3D(
+                positionComponent->x[playerPosIndex],
+                positionComponent->y[playerPosIndex],
+                positionComponent->z[playerPosIndex])
+            + QVector3D(0, 8.0f, 12.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
-    cameraAt = mio->getPosition() - QVector3D(0, -10.0f, 0);
+    cameraAt = QVector3D(
+                positionComponent->x[playerPosIndex],
+                positionComponent->y[playerPosIndex],
+                positionComponent->z[playerPosIndex])
+            - QVector3D(0, -10.0f, 0);
     //cameraAt = QVector3D{-7.0f, 0.0f, -5.0f};
     cameraUp = QVector3D{0.0f, 1.0f, 0.0f};
 }
@@ -207,7 +216,14 @@ void RenderWindow::render()
     {
         if (ThirdPersonView)
         {
-            mCamera.lookAt(cameraEye, mio->getPosition(), cameraUp);
+            int playerPosIndex = componentManager->components.at(player->Id);
+
+            mCamera.lookAt(cameraEye,
+                           QVector3D(
+                               positionComponent->x[playerPosIndex],
+                               positionComponent->y[playerPosIndex],
+                               positionComponent->z[playerPosIndex]),
+                           cameraUp);
         }
         else    // If 1stPersonView
         {
@@ -286,6 +302,8 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
+    int playerPosIndex = componentManager->components.at(player->Id);
+
     //Movement
     if (mio)
     {
@@ -295,23 +313,35 @@ void RenderWindow::render()
 //        playerHeight = heightMap->getHeight(playerPos);
 
         if (controller.moveLeft)
-            mio->move(-0.1f, 0.0f, 0.0f);
+            positionComponent->x[playerPosIndex] -= 0.1f;
+//            mio->move(-0.1f, 0.0f, 0.0f);
         if (controller.moveRight)
-            mio->move( 0.1f, 0.0f, 0.0f);
+            positionComponent->x[playerPosIndex] += 0.1f;
+//            mio->move( 0.1f, 0.0f, 0.0f);
         if (controller.moveUp)
-            mio->move( 0.0f, 0.1f, 0.0f);
+            positionComponent->y[playerPosIndex] += 0.1f;
+//            mio->move( 0.0f, 0.1f, 0.0f);
         if (controller.moveDown)
-            mio->move( 0.0f,-0.1f, 0.0f);
+            positionComponent->y[playerPosIndex] -= 0.1f;
+//            mio->move( 0.0f,-0.1f, 0.0f);
         if (controller.moveFor)
-            mio->move( 0.0f, 0.0f,-0.1f);
+            positionComponent->z[playerPosIndex] -= 0.1f;
+//            mio->move( 0.0f, 0.0f,-0.1f);
         if (controller.moveBack)
-            mio->move( 0.0f, 0.0f, 0.1f);
+            positionComponent->z[playerPosIndex] += 0.1f;
+//            mio->move( 0.0f, 0.0f, 0.1f);
 
         mio->setPosition3D(QVector3D{mio->getPosition().x(), playerHeight, mio->getPosition().z()});
 
         cameraEye = mio->getPosition() + QVector3D(0, 8.0f, 12.0f);
         cameraAt = mio->getPosition();
     }
+
+    cameraEye = QVector3D(
+                positionComponent->x[playerPosIndex],
+                positionComponent->y[playerPosIndex],
+                positionComponent->z[playerPosIndex])
+            + QVector3D(0, 8.0f, 12.0f);
 
     if (lightSwitch)
     {
