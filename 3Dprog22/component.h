@@ -58,7 +58,7 @@ public:
 class InventoryComponent : virtual Component
 {
 public:
-    std::vector<std::string> item; // I'm not actually sure what to put here... I'll figure it out later :)
+    std::vector<std::vector<std::string>> item; // I'm not actually sure what to put here... I'll figure it out later :)
 };
 
 #endif // COMPONENTMANAGER_H

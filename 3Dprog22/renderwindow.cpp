@@ -99,6 +99,15 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
                 100,
                 *healthComponent,
                 *componentManager);
+    entityBuilder.AddDamageComponent(
+                *player,
+                10,
+                *damageComponent,
+                *componentManager);
+    entityBuilder.AddInventoryComponent(
+                *player,
+                *inventoryComponent,
+                *componentManager);
     movementSystem->AddEntity(*player, *componentManager);
     entities.push_back(player);   // entity with Id 0
 

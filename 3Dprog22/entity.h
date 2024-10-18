@@ -36,11 +36,28 @@ public:
 
     void AddHealthComponent(Entity& entity,
                             int hp,
-                            HealthComponent& healthComp, ComponentManager& compManager)
+                            HealthComponent& hpComp, ComponentManager& compManager)
     {
         entity.m_componentMask.insert(ComponentType::Health);
-        healthComp.health.push_back(hp);
-        compManager.components[entity.Id] = healthComp.health.size() - 1;
+        hpComp.health.push_back(hp);
+        compManager.components[entity.Id] = hpComp.health.size() - 1;
+    }
+
+    void AddDamageComponent(Entity& entity,
+                            int dmg,
+                            DamageComponent& dmgComp, ComponentManager& compManager)
+    {
+        entity.m_componentMask.insert(ComponentType::Damage);
+        dmgComp.damage.push_back(dmg);
+        compManager.components[entity.Id] = dmgComp.damage.size() - 1;
+    }
+
+    void AddInventoryComponent(Entity& entity,
+                               InventoryComponent& invComp, ComponentManager& compManager)
+    {
+        entity.m_componentMask.insert(ComponentType::Inventory);
+        invComp.item.push_back(*new std::vector<std::string>());
+        compManager.components[entity.Id] = invComp.item.size() - 1;
     }
 };
 
