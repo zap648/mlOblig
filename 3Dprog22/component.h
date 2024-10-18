@@ -30,9 +30,8 @@ public:
     std::map<int, int> GetAllComponents() { return components; }
 };
 
-class PositionComponent : virtual Component
+struct PositionComponent : virtual Component
 {
-public:
     // position axis
     std::vector<float> x;
     std::vector<float> y;
@@ -43,22 +42,24 @@ public:
     std::vector<float> dz;
 };
 
-class HealthComponent : virtual Component
+struct HealthComponent : virtual Component
 {
-public:
     std::vector<int> health;
 };
 
-class DamageComponent : virtual Component
+struct DamageComponent : virtual Component
 {
-public:
     std::vector<int> damage;
 };
 
-class InventoryComponent : virtual Component
+struct ItemComponent : virtual Component
 {
-public:
-    std::vector<std::vector<std::string>> item; // I'm not actually sure what to put here... I'll figure it out later :)
+    std::vector<std::string> item;
+};
+
+struct InventoryComponent : virtual Component
+{
+    std::vector<ItemComponent> inventory;
 };
 
 #endif // COMPONENTMANAGER_H
