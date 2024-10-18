@@ -87,32 +87,36 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Setting up player entity
     player = new Entity();
-    entityBuilder.AddPositionComponent(
-                *player,
-                0.0f,
-                0.0f,
-                0.0f,
-                *positionComponent,
-                *componentManager);
-    entityBuilder.AddHealthComponent(
-                *player,
-                100,
-                *healthComponent,
-                *componentManager);
-    entityBuilder.AddDamageComponent(
-                *player,
-                10,
-                *damageComponent,
-                *componentManager);
-    entityBuilder.AddInventoryComponent(
-                *player,
-                *inventoryComponent,
-                *componentManager);
-    movementSystem->AddEntity(*player, *componentManager);
     entities.push_back(player);   // entity with Id 0
 
     // Setting up enemy entity
-//    entities.push_back(new Entity());   // Entity with Id 1
+    entities.push_back(new Entity());   // Entity with Id 1
+
+    for (int i = 0; i < entities.size(); i++)
+    {
+        entityBuilder.AddPositionComponent(
+                    *entities[i],
+                    0.0f,
+                    0.0f,
+                    0.0f,
+                    *positionComponent,
+                    *componentManager);
+        entityBuilder.AddHealthComponent(
+                    *entities[i],
+                    100,
+                    *healthComponent,
+                    *componentManager);
+        entityBuilder.AddDamageComponent(
+                    *entities[i],
+                    10,
+                    *damageComponent,
+                    *componentManager);
+        entityBuilder.AddInventoryComponent(
+                    *entities[i],
+                    *inventoryComponent,
+                    *componentManager);
+        movementSystem->AddEntity(*entities[i], *componentManager);
+    }
 
     int playerPosIndex = componentManager->components.at(player->Id);
     // Setting up the camera
