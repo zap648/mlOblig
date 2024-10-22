@@ -7,22 +7,18 @@
 #include <vector>
 class ComponentSystem
 {
-//public:
-//    virtual void Update(Entity entity);
+public:
+    virtual void AddEntity(const Entity& entity, const ComponentManager& componentManager) {}
+//    virtual void RemoveEntity(int entityId, const ComponentManager& componentManager);  // Uhhh... I don't necissarily *need* to do this (yet) :)
 };
 
-class MovementSystem : ComponentSystem
+class MovementSystem : public ComponentSystem
 {
-private:
     std::vector<int> positionIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager)
+    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
     {
         positionIndices.push_back(componentManager.components.at(entity.Id));
-    }
-    void RemoveEntity(int entityId, const ComponentManager& componentManager)
-    {
-        // Uhhh... I don't necissarily *need* to do this (yet) :)
     }
     void Update(PositionComponent &positions)
     {
@@ -36,13 +32,12 @@ public:
     }
 };
 
-class DamageSystem : ComponentSystem
+class DamageSystem : public ComponentSystem
 {
-private:
     std::vector<int> healthIndices;
     std::vector<int> damageIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager)
+    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
     {
         healthIndices.push_back(componentManager.components.at(entity.Id));
         damageIndices.push_back(componentManager.components.at(entity.Id));
@@ -71,12 +66,12 @@ public:
     }
 };
 
-class InventorySystem : ComponentSystem
+class InventorySystem : public ComponentSystem
 {
     std::vector<int> itemIndices;
     std::vector<int> invIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager)
+    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
     {
         itemIndices.push_back(componentManager.components.at(entity.Id));
     }
@@ -87,6 +82,11 @@ public:
 
         invComp.inventory[invIndex].item.push_back(itemComp.item[itemIndex]);
     }
+};
+
+class RenderSystem : public ComponentSystem
+{
+
 };
 
 #endif // COMPONENTSYSTEM_H

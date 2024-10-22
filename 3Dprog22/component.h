@@ -5,13 +5,14 @@
 #include <string>
 #include <vector>
 
-enum class ComponentType // I'm faking reflection due to c++ doesn't let me :)
+enum class ComponentType // I'm faking reflection due to c++ not letting me :)
 {
     Position,
     Health,
     Damage,
     Inventory,
-    Item
+    Item,
+    Render
 };
 
 class Component
@@ -62,6 +63,11 @@ struct ItemComponent : virtual Component
 struct InventoryComponent : virtual Component
 {
     std::vector<ItemComponent> inventory;
+};
+
+struct RenderComponent : virtual Component
+{
+    std::vector<bool> visible;
 };
 
 #endif // COMPONENTMANAGER_H
