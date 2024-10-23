@@ -86,7 +86,20 @@ public:
 
 class RenderSystem : public ComponentSystem
 {
-
+    std::vector<int> renderIndices;
+public:
+    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
+    {
+        renderIndices.push_back(componentManager.components.at(entity.Id));
+    }
+    void Update(RenderComponent &renders, GLint &mMatrixUniform)
+    {
+        for (int i = 0; i < renderIndices.size(); i++)
+        {
+            int renderIndex = renderIndices[i];
+            renders.render[renderIndex].draw(mMatrixUniform);
+        }
+    }
 };
 
 #endif // COMPONENTSYSTEM_H

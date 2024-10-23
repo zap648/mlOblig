@@ -1,6 +1,7 @@
 #ifndef COMPONENTMANAGER_H
 #define COMPONENTMANAGER_H
 
+#include "visualobject.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -67,7 +68,7 @@ struct InventoryComponent : virtual Component
 
 struct RenderComponent : virtual Component
 {
-    std::vector<bool> visible;
+    std::vector<VisualObject> render;
 };
 
 #endif // COMPONENTMANAGER_H

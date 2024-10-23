@@ -58,11 +58,10 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mRenderTimer = new QTimer(this);
 
     // Adding Plane Object to mObject
-    plane.push_back(new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f)));
-    plane.back()->move(0.0f, -0.5f, 0.0f);
-    mObjects.push_back(plane.back());
+    plane = new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f));
+    plane->move(0.0f, -0.5f, 0.0f);
+    mObjects.push_back(plane);
 //    mPhysics.push_back(plane.back());
-
 
     // Setting up Light Object and adding it to mObject
     light = new Light;
@@ -71,9 +70,9 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     specularStrength = light->mSpecularStrength;
     mObjects.push_back(light);
 
-    // Adding Interactive Object to mOjbects
-    mio = new InteractiveObject("interactiveObject.txt", false);
-    mObjects.push_back(mio);
+//    // Adding Interactive Object to mOjbects
+//    mio = new InteractiveObject("interactiveObject.txt", false);
+//    mObjects.push_back(mio);
 
     // Setting up ECS
     EntityBuilder entityBuilder;
@@ -89,8 +88,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     inventorySystem = new InventorySystem();
 
     // Setting up player entity
-    player = new Entity();
-    entities.push_back(player);   // entity with Id 0
+    player = new Entity();  // entity with Id 0
+    entities.push_back(player);
 
     // Add position component to entities (player + enemy/enemies)
     entityBuilder.AddPositionComponent(
@@ -122,47 +121,49 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     damageSystem->AddEntity(*player, *componentManager);
 
     // Setting up enemy entity
-    entities.push_back(new Entity());   // Entity with Id 1
+    enemy = new Entity();   // Entity with Id 1
+    entities.push_back(enemy);
     // Add position component to entities
     entityBuilder.AddPositionComponent(
-                *entities.back(),
+                *enemy,
                 5.0f, 0.0f, 0.0f,
                 *positionComponent,
                 *componentManager);
     // Add health component to entities
     entityBuilder.AddHealthComponent(
-                *entities.back(),
+                *enemy,
                 100,
                 *healthComponent,
                 *componentManager);
     // Add damage component to entities
     entityBuilder.AddDamageComponent(
-                *entities.back(),
+                *enemy,
                 1, 1.0f,
                 *damageComponent,
                 *componentManager);
 
     // Add entity to movementSystem (make them movable)
-    movementSystem->AddEntity(*entities.back(), *componentManager);
-    damageSystem->AddEntity(*entities.back(), *componentManager);
+    movementSystem->AddEntity(*enemy, *componentManager);
+    damageSystem->AddEntity(*enemy, *componentManager);
 
     // Setting up item entity
-    entities.push_back(new Entity());
+    item = new Entity();    // Entity with Id 1
+    entities.push_back(item);
     // Add position component to entity
     entityBuilder.AddPositionComponent(
-                *entities.back(),
+                *item,
                 -5.0f, 0.0f, 0.0f,
                 *positionComponent,
                 *componentManager);
     // Add item component to entity
     std::string coin = "Coin";
     entityBuilder.AddItemComponent(
-                *entities.back(),
+                *item,
                 coin,
                 *itemComponent,
                 *componentManager);
 
-    inventorySystem->AddEntity(*entities.back(), *componentManager);
+    inventorySystem->AddEntity(*item, *componentManager);
 
     int playerPosIndex = componentManager->components.at(player->Id);
     // Setting up the camera
@@ -265,13 +266,10 @@ void RenderWindow::init()
 
     glPointSize(5);
 
-    for (auto it = mObjects.begin(); it != mObjects.end(); it++)
-    {
-        (*it)->init();
-        (*it)->mRotate = mRotate;
-    }
-
     glBindVertexArray(0);
+
+    light->init();
+    plane->init();
 }
 
 // Called each frame - doing the rendering!!!
@@ -307,7 +305,7 @@ void RenderWindow::render()
     else    // If no interactive object
         mCamera.lookAt(cameraEye, QVector3D{0,0,0}, cameraUp);
 
-    // Updating component systems
+    // ECS updates
     movementSystem->Update(*positionComponent);
     damageSystem->Update(*damageComponent, (float)(mTimeStart.elapsed()) / 1000 /* milliseconds to seconds*/);
 
@@ -332,9 +330,9 @@ void RenderWindow::render()
     mCamera.update(mPmatrixUniform0, mVmatrixUniform0);
 
     //the actual draw call(s)
-    for (auto it = mObjects.begin(); it != mObjects.end(); it++)
-//        if ((*it) != mio && (*it) != heightMap)
-            (*it)->draw(mMatrixUniform0);
+    light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
+    plane->draw(mMatrixUniform0);   // the light object is too depended on, haha...
+
 
     // Draws all objects using phong shading
     // What shader to use (texture & phong shader)

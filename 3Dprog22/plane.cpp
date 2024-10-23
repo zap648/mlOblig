@@ -40,7 +40,7 @@ Plane::Plane(QVector2D s, QQuaternion r) : mx{0.0f}, my{0.0f}, mz{0.0f}
     Vertex v0{-x, 0, y, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
     Vertex v1{ x, 0, y, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
     Vertex v2{ x, 0,-y, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
-    Vertex v3{-x, 0,-y, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+    Vertex v3{-x, 0,-y, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f};    // Bottom-left vertex
 
     mVertices.insert(mVertices.end(),
                      {

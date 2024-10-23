@@ -64,6 +64,8 @@ private:
     // ECS
     // Entities
     Entity* player;
+    Entity* enemy;
+    Entity* item;
     std::vector<Entity*> entities;
     // Components
     PositionComponent* positionComponent;
@@ -77,7 +79,7 @@ private:
     DamageSystem* damageSystem;
     InventorySystem* inventorySystem;
 
-    QVector<Plane*> plane;
+    Plane* plane;
     VisualObject* xyz;
     VisualObject* heightMap;
     Camera mCamera;
