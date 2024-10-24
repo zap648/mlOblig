@@ -10,6 +10,7 @@ struct Controller
     bool moveRight{false};
     bool moveFor{false};
     bool moveBack{false};
+    bool attack{false};
 };
 
 #endif // CONTROLLER_H

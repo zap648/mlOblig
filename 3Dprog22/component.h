@@ -1,10 +1,10 @@
 #ifndef COMPONENTMANAGER_H
 #define COMPONENTMANAGER_H
 
-#include "visualobject.h"
 #include <map>
 #include <string>
 #include <vector>
+#include "visualobject.h"
 
 enum class ComponentType // I'm faking reflection due to c++ not letting me :)
 {
@@ -13,12 +13,8 @@ enum class ComponentType // I'm faking reflection due to c++ not letting me :)
     Damage,
     Inventory,
     Item,
-    Render
-};
-
-class Component
-{
-
+    Render,
+    Controller
 };
 
 class ComponentManager
@@ -33,7 +29,7 @@ public:
     std::map<int, int> GetAllComponents() { return components; }
 };
 
-struct PositionComponent : virtual Component
+struct PositionComponent
 {
     // position axis
     std::vector<float> x;
@@ -43,32 +39,57 @@ struct PositionComponent : virtual Component
     std::vector<float> dx;
     std::vector<float> dy;
     std::vector<float> dz;
+
+    int size;
 };
 
-struct HealthComponent : virtual Component
+struct HealthComponent
 {
     std::vector<int> health;
+
+    int size;
 };
 
-struct DamageComponent : virtual Component
+struct DamageComponent
 {
     std::vector<int> damage;
     std::vector<float> cooldown;
+
+    int size;
 };
 
-struct ItemComponent : virtual Component
+struct ItemComponent
 {
     std::vector<std::string> item;
+
+    int size;
 };
 
-struct InventoryComponent : virtual Component
+struct InventoryComponent
 {
     std::vector<ItemComponent> inventory;
+
+    int size;
 };
 
-struct RenderComponent : virtual Component
+struct RenderComponent
 {
-    std::vector<VisualObject> render;
+    std::vector<VisualObject*> render;
+
+    int size;
+};
+
+struct ControllerComponent
+{
+    std::vector<bool> moveUp{false};
+    std::vector<bool> moveDown{false};
+    std::vector<bool> moveLeft{false};
+    std::vector<bool> moveRight{false};
+    std::vector<bool> moveFor{false};
+    std::vector<bool> moveBack{false};
+    std::vector<bool> attack{false};
+
+    int size;
 };
 
 #endif // COMPONENTMANAGER_H

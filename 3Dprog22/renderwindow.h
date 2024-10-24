@@ -8,8 +8,9 @@
 #include <vector>
 
 #include "camera.h";
-#include "componentsystem.h"
 #include "component.h"
+#include "componentsystem.h"
+#include "cube.h"
 #include "entity.h"
 #include "plane.h"
 #include "collisionhandler.h"
@@ -61,7 +62,7 @@ private:
     std::vector<PhysicsObject*> mPhysics;
     VisualObject* mio;      //member interactive object
 
-    // ECS
+    // Entity Component System
     // Entities
     Entity* player;
     Entity* enemy;
@@ -73,13 +74,16 @@ private:
     DamageComponent* damageComponent;
     ItemComponent* itemComponent;
     InventoryComponent* inventoryComponent;
+    RenderComponent* renderComponent;
     ComponentManager* componentManager;
     // Systems
     MovementSystem* movementSystem;
     DamageSystem* damageSystem;
     InventorySystem* inventorySystem;
+    RenderSystem* renderSystem;
 
     Plane* plane;
+    Cube* cube;
     VisualObject* xyz;
     VisualObject* heightMap;
     Camera mCamera;

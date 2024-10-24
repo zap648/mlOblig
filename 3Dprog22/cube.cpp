@@ -51,6 +51,65 @@ Cube::Cube()
     mVertices.push_back(Vertex{ 0.5f, -0.5f,  -0.5f,   1.0f,  0,  1.0f});
     mVertices.push_back(Vertex{ 0.5f,  0.5f,   0.5f,   1.0f,  0,  1.0f});
     mVertices.push_back(Vertex{ 0.5,   0.5f,  -0.5f,   1.0f,  0,  1.0f});
+
+    mRotate = false;
+}
+
+Cube::Cube(float x, float y, float z, float r, float g, float b)
+{
+    float hx = x/2; float hy = y/2; float hz = z/2;
+
+    // Cube
+    // 1st Plane - 1st Tri
+    mVertices.push_back(Vertex{-hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{-hx,-hy, hz, r, g, b});
+    // 1st Plane - 2nd Tri
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy, hz, r, g, b});
+    mVertices.push_back(Vertex{-hx,-hy, hz, r, g, b});
+    // 2nd Plane - 1st Tri
+    mVertices.push_back(Vertex{-hx, hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{-hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    // 2nd Plane - 2nd Tri
+    mVertices.push_back(Vertex{-hx, hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy,-hz, r, g, b});
+    // 3rd Plane - 1st Tri
+    mVertices.push_back(Vertex{-hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{-hx,-hy, hz, r, g, b});
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    // 3rd Plane - 2nd Tri
+    mVertices.push_back(Vertex{-hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    mVertices.push_back(Vertex{-hx, hy,-hz, r, g, b});
+    // 4th Plane - 1st Tri
+    mVertices.push_back(Vertex{-hx, hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    // 4th Plane - 2nd Tri
+    mVertices.push_back(Vertex{ hx, hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy, hz, r, g, b});
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    // 5th Plane - 1st Tri
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    mVertices.push_back(Vertex{-hx,-hy, hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy, hz, r, g, b});
+    // 5th Plane - 2nd Tri
+    mVertices.push_back(Vertex{-hx, hy, hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy, hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy, hz, r, g, b});
+    // 6th Plane - 1st Tri
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx,-hy, hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy, hz, r, g, b});
+    // 6th Plane - 2nd Tri
+    mVertices.push_back(Vertex{ hx,-hy,-hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy, hz, r, g, b});
+    mVertices.push_back(Vertex{ hx, hy,-hz, r, g, b});
+
+    mRotate = false;
 }
 
 Cube::~Cube()
@@ -118,4 +177,15 @@ void Cube::draw(GLint matrixUniform)
     //just to make the triangle rotate - tweak this: degree, x,   y,   z -axis
     if(mRotate)
         mMatrix.rotate(2.0f, 0.0f, 1.0f, 0.0f);
+}
+
+void Cube::move(float dx, float dy, float dz)
+{
+    mx += dx;
+    my += dy;
+    mz += dz;
+    mr = 0.1f;
+
+//    qDebug() << "move";
+    mMatrix.translate(dx, dy, dz);
 }

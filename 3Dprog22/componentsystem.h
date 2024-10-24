@@ -92,13 +92,25 @@ public:
     {
         renderIndices.push_back(componentManager.components.at(entity.Id));
     }
-    void Update(RenderComponent &renders, GLint &mMatrixUniform)
+    void Init(RenderComponent &renders)
+    {
+        for (int i = 0; i < renders.render.size(); i++)
+        {
+            renders.render[i]->init();
+        }
+    }
+    void Update(RenderComponent &renders, const GLint &mMatrixUniform)
     {
         for (int i = 0; i < renderIndices.size(); i++)
         {
             int renderIndex = renderIndices[i];
-            renders.render[renderIndex].draw(mMatrixUniform);
+            renders.render[renderIndex]->draw(mMatrixUniform);
         }
+    }
+    void Move(const Entity &entity, const float x, const float y, const float z, RenderComponent &renders)
+    {
+        int renderIndex = renderIndices.at(entity.Id);;
+        renders.render[renderIndex]->move(x, y, z);
     }
 };
 

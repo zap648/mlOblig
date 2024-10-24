@@ -81,87 +81,92 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     damageComponent = new DamageComponent();
     inventoryComponent = new InventoryComponent();
     itemComponent = new ItemComponent();
+    renderComponent = new RenderComponent();
 
     componentManager = new ComponentManager();
     movementSystem = new MovementSystem();
     damageSystem = new DamageSystem();
     inventorySystem = new InventorySystem();
+    renderSystem = new RenderSystem();
 
     // Setting up player entity
-    player = new Entity();  // entity with Id 0
+    player = new Entity(0);  // entity with Id 0
     entities.push_back(player);
 
-    // Add position component to entities (player + enemy/enemies)
-    entityBuilder.AddPositionComponent(
-                *player,
-                0.0f, 0.0f, 0.0f,
-                *positionComponent,
-                *componentManager);
-    // Add health component to entities (player + enemy/enemies)
-    entityBuilder.AddHealthComponent(
-                *player,
-                100,
-                *healthComponent,
-                *componentManager);
-    // Add damage component to entities (player + enemy/enemies)
-    entityBuilder.AddDamageComponent(
-                *player,
-                10, 1.0f,
-                *damageComponent,
-                *componentManager);
-    // Add inventory component to entities (player + enemy/enemies)
-    entityBuilder.AddInventoryComponent(
-                *player,
-                *itemComponent,
-                *inventoryComponent,
-                *componentManager);
+    // Add position component to player
+    entityBuilder.AddPositionComponent(*player,
+                                       0.0f, 0.0f, 0.0f,
+                                       *positionComponent, *componentManager);
+    // Add health component to player
+    entityBuilder.AddHealthComponent(*player,
+                                     10,
+                                     *healthComponent, *componentManager);
+    // Add damage component to player
+    entityBuilder.AddDamageComponent(*player,
+                                     1, 1.0f,
+                                     *damageComponent, *componentManager);
+    // Add inventory component to player
+    entityBuilder.AddInventoryComponent(*player,
+                                        *itemComponent,
+                                        *inventoryComponent, *componentManager);
+    // Add render component to player
+    cube = new Cube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+    entityBuilder.AddRenderComponent(*player,
+                                     *cube,
+                                     *renderComponent, *componentManager);
 
     // Add entity to movementSystem (make them movable)
     movementSystem->AddEntity(*player, *componentManager);
+    // Add entity to damageSystem (make them damagable)
     damageSystem->AddEntity(*player, *componentManager);
+    // Add entity to renderSystem (make them rendered)
+    renderSystem->AddEntity(*player, *componentManager);
 
     // Setting up enemy entity
-    enemy = new Entity();   // Entity with Id 1
+    enemy = new Entity(1);   // Entity with Id 1
     entities.push_back(enemy);
-    // Add position component to entities
-    entityBuilder.AddPositionComponent(
-                *enemy,
-                5.0f, 0.0f, 0.0f,
-                *positionComponent,
-                *componentManager);
-    // Add health component to entities
-    entityBuilder.AddHealthComponent(
-                *enemy,
-                100,
-                *healthComponent,
-                *componentManager);
-    // Add damage component to entities
-    entityBuilder.AddDamageComponent(
-                *enemy,
-                1, 1.0f,
-                *damageComponent,
-                *componentManager);
+    // Add position component to enemy
+    entityBuilder.AddPositionComponent(*enemy,
+                                       4.0f, 0.0f, 0.0f,
+                                       *positionComponent, *componentManager);
+    // Add health component to enemy
+    entityBuilder.AddHealthComponent(*enemy,
+                                     2,
+                                     *healthComponent, *componentManager);
+    // Add damage component to enemy
+    entityBuilder.AddDamageComponent(*enemy,
+                                     1, 1.0f,
+                                     *damageComponent, *componentManager);
+    // Add render component to enemy
+    cube = new Cube(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+    entityBuilder.AddRenderComponent(*enemy,
+                                     *cube,
+                                     *renderComponent, *componentManager);
 
     // Add entity to movementSystem (make them movable)
     movementSystem->AddEntity(*enemy, *componentManager);
+    // Add entity to damageSystem (make them damagable)
     damageSystem->AddEntity(*enemy, *componentManager);
+    // Add entity to renderSystem (make them rendered)
+    renderSystem->AddEntity(*enemy, *componentManager);
 
     // Setting up item entity
-    item = new Entity();    // Entity with Id 1
+    item = new Entity(2);    // Entity with Id 2
     entities.push_back(item);
-    // Add position component to entity
-    entityBuilder.AddPositionComponent(
-                *item,
-                -5.0f, 0.0f, 0.0f,
-                *positionComponent,
-                *componentManager);
-    // Add item component to entity
+    // Add position component to item
+    entityBuilder.AddPositionComponent(*item,
+                                       -4.0f, 0.0f, 0.0f,
+                                       *positionComponent, *componentManager);
+    // Add item component to item
     std::string coin = "Coin";
-    entityBuilder.AddItemComponent(
-                *item,
-                coin,
-                *itemComponent,
-                *componentManager);
+    entityBuilder.AddItemComponent(*item,
+                                   coin,
+                                   *itemComponent, *componentManager);
+    // Add render component to item
+    cube = new Cube(0.5f, 2.0f, 0.5f, 0.0f, 1.0f, 1.0f);
+    entityBuilder.AddRenderComponent(*item,
+                                     *cube,
+                                     *renderComponent, *componentManager);
 
     inventorySystem->AddEntity(*item, *componentManager);
 
@@ -270,6 +275,7 @@ void RenderWindow::init()
 
     light->init();
     plane->init();
+    renderSystem->Init(*renderComponent);
 }
 
 // Called each frame - doing the rendering!!!
@@ -291,8 +297,7 @@ void RenderWindow::render()
                            QVector3D(
                                positionComponent->x[playerPosIndex],
                                positionComponent->y[playerPosIndex],
-                               positionComponent->z[playerPosIndex]),
-                           cameraUp);
+                               positionComponent->z[playerPosIndex]), cameraUp);
         }
         else    // If 1stPersonView
         {
@@ -331,8 +336,8 @@ void RenderWindow::render()
 
     //the actual draw call(s)
     light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
-    plane->draw(mMatrixUniform0);   // the light object is too depended on, haha...
-
+    plane->draw(mMatrixUniform0);   // but the light object is too depended on, haha...
+    renderSystem->Update(*renderComponent, mMatrixUniform0);
 
     // Draws all objects using phong shading
     // What shader to use (texture & phong shader)
@@ -403,6 +408,9 @@ void RenderWindow::render()
                     positionComponent->y[playerIndex],
                     positionComponent->z[playerIndex])
                 + QVector3D(0, 6.0f, 10.0f);
+
+        renderSystem->Move(*player, positionComponent->dx[playerIndex], positionComponent->dy[playerIndex], positionComponent->dz[playerIndex], *renderComponent);
+//        cube->move(positionComponent->dx[playerIndex], positionComponent->dy[playerIndex], positionComponent->dz[playerIndex]);
     }
 
     if (lightSwitch)
@@ -419,7 +427,7 @@ void RenderWindow::render()
     QVector3D playerPosition = QVector3D(positionComponent->x[playerIndex], positionComponent->y[playerIndex],positionComponent->z[playerIndex]);
 
     // Checks for collisions
-    for (int i = 1; i < entities.size(); i++) // entities 0 is player, so ignore player OBS.
+    for (int i = 1; i < entities.size(); i++) // entities 0 is player, so ignore player
     {
         int entityPosIndex = componentManager->components.at(entities[i]->Id);
         // QVector3D has a working distance function
@@ -430,19 +438,28 @@ void RenderWindow::render()
         float distance = enemyPosition.distanceToPoint(playerPosition);
 
         // Checking if this entity contains a Damage Component
-        if (std::find(entities[i]->m_componentMask.begin(), entities[i]->m_componentMask.begin(), ComponentType::Damage) != entities[i]->m_componentMask.end())
+        if (std::find(entities[i]->b_componentType.begin(), entities[i]->b_componentType.begin(), ComponentType::Damage) != entities[i]->b_componentType.end())
         {
             // If the entity is close enough & its damage component is no longer on cooldown
-            if (distance < 1.0f && damageComponent->cooldown[i] < 0.0f)
+            if (distance < 1.0f)
             {
-                damageSystem->Damage(*entities[i], *player, *damageComponent, *healthComponent);
-                mLogger->logText("Player Hit! Player health is now " + std::to_string(healthComponent->health[playerIndex]));
+                if (damageComponent->cooldown[i] < 0.0f)
+                {
+                    damageSystem->Damage(*entities[i], *player, *damageComponent, *healthComponent);
+                    mLogger->logText("Player Hit! Player health is now " + std::to_string(healthComponent->health[playerIndex]));
+                }
 
                 if (healthComponent->health[playerIndex] <= 0)
                 {
                     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
                     qApp->quit();
                 }
+            }
+
+            if (controller.attack && damageComponent->cooldown[playerIndex] < 0.0f)
+            {
+                damageSystem->Damage(*player, *entities[i], *damageComponent, *healthComponent);
+                mLogger->logText("Enemy Hit! Enemy health is now " + std::to_string(healthComponent->health[i]));
             }
         }
 
@@ -634,6 +651,7 @@ void RenderWindow::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_S) controller.moveBack = true;
     if (event->key() == Qt::Key_E) controller.moveUp = true;
     if (event->key() == Qt::Key_Q) controller.moveDown = true;
+    if (event->key() == Qt::Key_Space) controller.attack = true;
 
     //Change camera view
     if (event->key() == Qt::Key_C) ThirdPersonView = !ThirdPersonView;
@@ -649,4 +667,5 @@ void RenderWindow::keyReleaseEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_S) controller.moveBack = false;
     if (event->key() == Qt::Key_E) controller.moveUp = false;
     if (event->key() == Qt::Key_Q) controller.moveDown = false;
+    if (event->key() == Qt::Key_Space) controller.attack = false;
 }
