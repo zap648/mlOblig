@@ -8,28 +8,33 @@
 
 enum class ComponentType // I'm faking reflection due to c++ not letting me :)
 {
-    Position,
-    Health,
-    Damage,
-    Inventory,
-    Item,
-    Render,
-    Controller
+    Position,   // 0 - Position
+    Health,     // 1 - Health
+    Damage,     // 2 - Damage
+    Inventory,  // 3 - Inventory
+    Item,       // 4 - Item
+    Render,     // 5 - Render
+    Controller  // 6 - Controller
 };
 
-class ComponentManager
+struct Component
 {
-public:
+    ComponentType type;
+    int size;
+};
+
+struct ComponentManager
+{
     std::map<int, int> components;
 
-    void AddComponent(int entityId, int component) { components[entityId] = component; }
-    auto GetComponent(int entityId) { return components[entityId]; }
-    bool HasComponent(int entityId) { return components.count(entityId); }
-    void RemoveComponent(int entityId) { components.erase(entityId); }
-    std::map<int, int> GetAllComponents() { return components; }
+    void AddComponent(int entityId, int componentIndex) { components[entityId] = componentIndex; }
+    int GetComponent(int entityId) { return components[entityId]; }        // Returns the component index (where the entity is in the component array) of the entity
+    bool HasComponent(int entityId) { return components.count(entityId); }  // Returns bool if the entity has the component (0 - false, 1++ - true)
+    void RemoveComponent(int entityId) { components.erase(entityId); }      // Removes components of entity from the map
+    std::map<int, int> GetAllComponents() { return components; }            // Returns entity component map
 };
 
-struct PositionComponent
+struct PositionComponent : Component
 {
     // position axis
     std::vector<float> x;
@@ -39,47 +44,35 @@ struct PositionComponent
     std::vector<float> dx;
     std::vector<float> dy;
     std::vector<float> dz;
-
-    int size;
 };
 
-struct HealthComponent
+struct HealthComponent : Component
 {
     std::vector<int> health;
-
-    int size;
 };
 
-struct DamageComponent
+struct DamageComponent : Component
 {
     std::vector<int> damage;
     std::vector<float> cooldown;
-
-    int size;
 };
 
-struct ItemComponent
+struct ItemComponent : Component
 {
     std::vector<std::string> item;
-
-    int size;
 };
 
-struct InventoryComponent
+struct InventoryComponent : Component
 {
     std::vector<ItemComponent> inventory;
-
-    int size;
 };
 
-struct RenderComponent
+struct RenderComponent : Component
 {
     std::vector<VisualObject*> render;
-
-    int size;
 };
 
-struct ControllerComponent
+struct ControllerComponent : Component
 {
     std::vector<bool> moveUp{false};
     std::vector<bool> moveDown{false};
@@ -88,8 +81,6 @@ struct ControllerComponent
     std::vector<bool> moveFor{false};
     std::vector<bool> moveBack{false};
     std::vector<bool> attack{false};
-
-    int size;
 };
 
 #endif // COMPONENTMANAGER_H

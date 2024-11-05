@@ -114,6 +114,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     entityBuilder.AddRenderComponent(*player,
                                      *cube,
                                      *renderComponent, *componentManager);
+    // Add controller component to player
+//    entityBuilder.AddControllerComponent(*player, *controllerComponent, *componentManager);
 
     // Add entity to movementSystem (make them movable)
     movementSystem->AddEntity(*player, *componentManager);
@@ -149,6 +151,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     damageSystem->AddEntity(*enemy, *componentManager);
     // Add entity to renderSystem (make them rendered)
     renderSystem->AddEntity(*enemy, *componentManager);
+    renderSystem->Move(*enemy, 4.0f, 0.0f, 0.0f, *renderComponent);
 
     // Setting up item entity
     item = new Entity(2);    // Entity with Id 2
@@ -170,7 +173,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     inventorySystem->AddEntity(*item, *componentManager);
 
-    int playerPosIndex = componentManager->components.at(player->Id);
+    int playerPosIndex = componentManager->GetComponent(player->Id);
     // Setting up the camera
     cameraEye = QVector3D(
                 positionComponent->x[playerPosIndex],
@@ -383,7 +386,7 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
-    int playerIndex = componentManager->components.at(player->Id);
+    int playerIndex = componentManager->GetComponent(player->Id);
 
     // Moving player entity
     if (player)
@@ -409,8 +412,11 @@ void RenderWindow::render()
                     positionComponent->z[playerIndex])
                 + QVector3D(0, 6.0f, 10.0f);
 
-        renderSystem->Move(*player, positionComponent->dx[playerIndex], positionComponent->dy[playerIndex], positionComponent->dz[playerIndex], *renderComponent);
-//        cube->move(positionComponent->dx[playerIndex], positionComponent->dy[playerIndex], positionComponent->dz[playerIndex]);
+        renderSystem->Move(*player,
+                           positionComponent->dx[playerIndex],
+                           positionComponent->dy[playerIndex],
+                           positionComponent->dz[playerIndex],
+                           *renderComponent);
     }
 
     if (lightSwitch)
@@ -429,7 +435,7 @@ void RenderWindow::render()
     // Checks for collisions
     for (int i = 1; i < entities.size(); i++) // entities 0 is player, so ignore player
     {
-        int entityPosIndex = componentManager->components.at(entities[i]->Id);
+        int entityPosIndex = componentManager->GetComponent(entities[i]->Id);
         // QVector3D has a working distance function
         QVector3D enemyPosition = QVector3D(positionComponent->x[entityPosIndex],
                                             positionComponent->y[entityPosIndex],
@@ -438,7 +444,7 @@ void RenderWindow::render()
         float distance = enemyPosition.distanceToPoint(playerPosition);
 
         // Checking if this entity contains a Damage Component
-        if (std::find(entities[i]->b_componentType.begin(), entities[i]->b_componentType.begin(), ComponentType::Damage) != entities[i]->b_componentType.end())
+        if (componentManager->HasComponent(entities[i]->Id))
         {
             // If the entity is close enough & its damage component is no longer on cooldown
             if (distance < 1.0f)
@@ -462,6 +468,8 @@ void RenderWindow::render()
                 mLogger->logText("Enemy Hit! Enemy health is now " + std::to_string(healthComponent->health[i]));
             }
         }
+
+
 
         // Minor pointing issue with  :)
 //        // Checking if this entity contains a Damage Component

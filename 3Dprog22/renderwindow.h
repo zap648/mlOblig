@@ -76,6 +76,7 @@ private:
     InventoryComponent* inventoryComponent;
     RenderComponent* renderComponent;
     ComponentManager* componentManager;
+    ControllerComponent* controllerComponent;
     // Systems
     MovementSystem* movementSystem;
     DamageSystem* damageSystem;

@@ -8,7 +8,7 @@
 class ComponentSystem
 {
 public:
-    virtual void AddEntity(const Entity& entity, const ComponentManager& componentManager) {}
+    virtual void AddEntity(const Entity& entity, ComponentManager& componentManager) {}
 //    virtual void RemoveEntity(int entityId, const ComponentManager& componentManager);  // Uhhh... I don't necissarily *need* to do this (yet) :)
 };
 
@@ -16,9 +16,9 @@ class MovementSystem : public ComponentSystem
 {
     std::vector<int> positionIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
+    void AddEntity(const Entity &entity, ComponentManager& componentManager) override
     {
-        positionIndices.push_back(componentManager.components.at(entity.Id));
+        positionIndices.push_back(componentManager.GetComponent(entity.Id));
     }
     void Update(PositionComponent &positions)
     {
@@ -37,10 +37,10 @@ class DamageSystem : public ComponentSystem
     std::vector<int> healthIndices;
     std::vector<int> damageIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
+    void AddEntity(const Entity &entity, ComponentManager& componentManager) override
     {
-        healthIndices.push_back(componentManager.components.at(entity.Id));
-        damageIndices.push_back(componentManager.components.at(entity.Id));
+        healthIndices.push_back(componentManager.GetComponent(entity.Id));
+        damageIndices.push_back(componentManager.GetComponent(entity.Id));
     }
 
     void Damage(const Entity &attacker, const Entity &receiver, DamageComponent& dmgComponent, HealthComponent& hpComponent)
@@ -71,9 +71,9 @@ class InventorySystem : public ComponentSystem
     std::vector<int> itemIndices;
     std::vector<int> invIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
+    void AddEntity(const Entity &entity, ComponentManager& componentManager) override
     {
-        itemIndices.push_back(componentManager.components.at(entity.Id));
+        itemIndices.push_back(componentManager.GetComponent(entity.Id));
     }
     void PickUp(const Entity &item, const Entity &inventory, InventoryComponent &invComp, ItemComponent &itemComp)
     {
@@ -88,9 +88,9 @@ class RenderSystem : public ComponentSystem
 {
     std::vector<int> renderIndices;
 public:
-    void AddEntity(const Entity &entity, const ComponentManager& componentManager) override
+    void AddEntity(const Entity &entity, ComponentManager& componentManager) override
     {
-        renderIndices.push_back(componentManager.components.at(entity.Id));
+        renderIndices.push_back(componentManager.GetComponent(entity.Id));
     }
     void Init(RenderComponent &renders)
     {
