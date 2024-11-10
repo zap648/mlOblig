@@ -71,32 +71,47 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     mObjects.push_back(light);
 
     // Setting up ECS
+    // Setting up Components
     positionComponent = new PositionComponent();
-
+    renderComponent = new RenderComponent();
+    // ... and their managers
     positionManager = new ComponentManager<PositionComponent>();
-    movementSystem = new MovementSystem(positionComponent, positionManager);
+    renderManager = new ComponentManager<RenderComponent>();
 
+    // Setting up Systems
+    movementSystem = new MovementSystem(positionComponent, positionManager);
+    renderSystem = new RenderSystem(renderComponent, renderManager);
+
+    // Setting up Entities
     // Setting up player entity
     player = new Entity(0);  // entity with Id 0
     entities.push_back(player);
 
     // Add position component to player
     positionManager->AddComponent(player->Id, positionComponent);
+    // Add render component to player
+    renderManager->AddComponent(player->Id, renderComponent);
 
     positionComponent->init();
+    renderComponent->init();
 
-    int playerPosIndex = positionManager->GetComponent(player->Id);
+    int playerPositionIndex = positionManager->GetComponent(player->Id);
+    int playerRenderIndex = renderManager->GetComponent(player->Id);
+
+    // Giving player render a cube
+    renderComponent->render[playerRenderIndex] = new Cube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+
     // Setting up the camera
     cameraEye = QVector3D(
-                positionComponent->x[playerPosIndex],
-                positionComponent->y[playerPosIndex],
-                positionComponent->z[playerPosIndex])
+                positionComponent->x[playerPositionIndex],
+                positionComponent->y[playerPositionIndex],
+                positionComponent->z[playerPositionIndex])
             + QVector3D(0, 8.0f, 12.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
     cameraAt = QVector3D(
-                positionComponent->x[playerPosIndex],
-                positionComponent->y[playerPosIndex],
-                positionComponent->z[playerPosIndex])
+                positionComponent->x[playerPositionIndex],
+                positionComponent->y[playerPositionIndex],
+                positionComponent->z[playerPositionIndex])
             - QVector3D(0, -10.0f, 0);
     //cameraAt = QVector3D{-7.0f, 0.0f, -5.0f};
     cameraUp = QVector3D{0.0f, 1.0f, 0.0f};
@@ -190,7 +205,7 @@ void RenderWindow::init()
 
     light->init();
     plane->init();
-//    renderSystem->Init(*renderComponent);
+    renderSystem->Init();
 }
 
 // Called each frame - doing the rendering!!!
@@ -251,8 +266,8 @@ void RenderWindow::render()
 
     //the actual draw call(s)
     light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
-    plane->draw(mMatrixUniform0);   // but the light object is too depended on, haha...
-//    renderSystem->Update(*renderComponent, mMatrixUniform0);
+    plane->draw(mMatrixUniform0);   // but the light object is too depended on by the program, haha...
+    renderSystem->Update(mMatrixUniform0);
 
     // Draws all objects using phong shading
     // What shader to use (texture & phong shader)
@@ -324,11 +339,10 @@ void RenderWindow::render()
                     positionComponent->z[playerIndex])
                 + QVector3D(0, 6.0f, 10.0f);
 
-//        renderSystem->Move(*player,
-//                           positionComponent->dx[playerIndex],
-//                           positionComponent->dy[playerIndex],
-//                           positionComponent->dz[playerIndex],
-//                           *renderComponent);
+        renderSystem->Move(player,
+                           positionComponent->dx[playerIndex],
+                           positionComponent->dy[playerIndex],
+                           positionComponent->dz[playerIndex]);
     }
 
     if (lightSwitch)

@@ -33,4 +33,38 @@ public:
     }
 };
 
+class RenderSystem : public ComponentSystem
+{
+    RenderComponent* renderComponent;
+    ComponentManager<RenderComponent>* renderManager;
+public:
+    RenderSystem(RenderComponent* renderComponent, ComponentManager<RenderComponent>* renderManager)
+    {
+        this->renderComponent = renderComponent;
+        this->renderManager = renderManager;
+    }
+
+    void Init()
+    {
+        for (int i = 0; i < renderComponent->size; i++)
+        {
+            renderComponent->render[i]->init();
+        }
+    }
+
+    void Move(const Entity* entity, float x, float y, float z)
+    {
+        int entityIndex = renderManager->GetComponent(entity->Id);
+        renderComponent->render[entityIndex]->move(x, y, z);
+    }
+
+    void Update(const GLint mMatrixUniform)
+    {
+        for (int i = 0; i < renderComponent->size; i++)
+        {
+            renderComponent->render[i]->draw(mMatrixUniform);
+        }
+    }
+};
+
 #endif // COMPONENTSYSTEM_H

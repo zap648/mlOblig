@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "visualobject.h"
+#include "cube.h"
 
 enum class ComponentType // I'm faking reflection due to c++ not letting me :)
 {
@@ -57,6 +57,21 @@ struct PositionComponent : public Component
     }
 };
 
+struct RenderComponent : Component
+{
+    std::vector<VisualObject*> render;
+
+    RenderComponent() { size = 0; }
+
+    void init()
+    {
+        for (int i = 0; i < size; i++)
+        {
+            render.push_back(new Cube(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
+        }
+    }
+};
+
 struct HealthComponent : Component
 {
     std::vector<int> health;
@@ -76,11 +91,6 @@ struct ItemComponent : Component
 struct InventoryComponent : Component
 {
     std::vector<ItemComponent> inventory;
-};
-
-struct RenderComponent : Component
-{
-    std::vector<VisualObject*> render;
 };
 
 struct ControllerComponent : Component
