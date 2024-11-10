@@ -19,22 +19,22 @@ enum class ComponentType // I'm faking reflection due to c++ not letting me :)
 
 struct Component
 {
-    ComponentType type;
     int size;
 };
 
-struct ComponentManager
+template <class T>
+class ComponentManager
 {
     std::map<int, int> components;
-
-    void AddComponent(int entityId, int componentIndex) { components[entityId] = componentIndex; }
-    int GetComponent(int entityId) { return components[entityId]; }        // Returns the component index (where the entity is in the component array) of the entity
-    bool HasComponent(int entityId) { return components.count(entityId); }  // Returns bool if the entity has the component (0 - false, 1++ - true)
-    void RemoveComponent(int entityId) { components.erase(entityId); }      // Removes components of entity from the map
-    std::map<int, int> GetAllComponents() { return components; }            // Returns entity component map
+public:
+    void AddComponent(int entityId, T* component) { components.insert(std::make_pair(entityId, component->size)); component->size++; }
+    int GetComponent(int entityId) { return components[entityId]; }
+    bool HasComponent(int entityId) { return components.count(entityId); }
+    void RemoveComponent(int entityId) { components.erase(entityId); }
+    std::map<int, int> GetAllComponents() { return components; }
 };
 
-struct PositionComponent : Component
+struct PositionComponent : public Component
 {
     // position axis
     std::vector<float> x;
@@ -44,6 +44,17 @@ struct PositionComponent : Component
     std::vector<float> dx;
     std::vector<float> dy;
     std::vector<float> dz;
+
+    PositionComponent() { size = 0; }
+
+    void init()
+    {
+        for (int i = 0; i < size; i++)
+        {
+            x.push_back(0.0f); y.push_back(0.0f); z.push_back(0.0f);    // Position coordinates
+            dx.push_back(0.0f); dy.push_back(0.0f); dz.push_back(0.0f); // Direction coordinates
+        }
+    }
 };
 
 struct HealthComponent : Component

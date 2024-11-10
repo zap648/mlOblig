@@ -70,18 +70,18 @@ private:
     std::vector<Entity*> entities;
     // Components
     PositionComponent* positionComponent;
-    HealthComponent* healthComponent;
-    DamageComponent* damageComponent;
-    ItemComponent* itemComponent;
-    InventoryComponent* inventoryComponent;
-    RenderComponent* renderComponent;
-    ComponentManager* componentManager;
-    ControllerComponent* controllerComponent;
+//    HealthComponent* healthComponent;
+//    DamageComponent* damageComponent;
+//    ItemComponent* itemComponent;
+//    InventoryComponent* inventoryComponent;
+//    RenderComponent* renderComponent;
+//    ControllerComponent* controllerComponent;
+    ComponentManager<PositionComponent>* positionManager;
     // Systems
     MovementSystem* movementSystem;
-    DamageSystem* damageSystem;
-    InventorySystem* inventorySystem;
-    RenderSystem* renderSystem;
+//    DamageSystem* damageSystem;
+//    InventorySystem* inventorySystem;
+//    RenderSystem* renderSystem;
 
     Plane* plane;
     Cube* cube;
