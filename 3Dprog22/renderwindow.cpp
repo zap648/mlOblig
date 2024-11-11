@@ -112,31 +112,32 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     damageComponent->init();
 
     // To custom change some variables
-    int playerPositionIndex = positionManager->GetComponent(player->Id);
-    int playerRenderIndex = renderManager->GetComponent(player->Id);
+    int playerPosIndex = positionManager->GetComponent(player->Id);
+    int playerRenIndex = renderManager->GetComponent(player->Id);
 
-    int enemyPositionIndex = positionManager->GetComponent(enemy->Id);
-    int enemyRenderIndex = renderManager->GetComponent(enemy->Id);
+    int enemyPosIndex = positionManager->GetComponent(enemy->Id);
+    int enemyRenIndex = renderManager->GetComponent(enemy->Id);
 
     // Custom starting position
-    positionComponent->x[enemyPositionIndex] = 4.5f;
+    positionComponent->x[enemyPosIndex] = 4.5f;
 
     // Give custom renders
-    renderComponent->render[playerRenderIndex] = new Cube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
-    renderComponent->render[enemyRenderIndex] = new Cube(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
-    renderSystem->Move(enemy, positionComponent->x[enemyPositionIndex], positionComponent->y[enemyPositionIndex], positionComponent->z[enemyPositionIndex]);
+    renderComponent->render[playerRenIndex] = new Cube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+    renderComponent->render[enemyRenIndex] = new Cube(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+
+    renderSystem->Move(enemy, positionComponent->x[enemyPosIndex], positionComponent->y[enemyPosIndex], positionComponent->z[enemyPosIndex]);
 
     // Setting up the camera
     cameraEye = QVector3D(
-                positionComponent->x[playerPositionIndex],
-                positionComponent->y[playerPositionIndex],
-                positionComponent->z[playerPositionIndex])
+                positionComponent->x[playerPosIndex],
+                positionComponent->y[playerPosIndex],
+                positionComponent->z[playerPosIndex])
             + QVector3D(0, 8.0f, 12.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
     cameraAt = QVector3D(
-                positionComponent->x[playerPositionIndex],
-                positionComponent->y[playerPositionIndex],
-                positionComponent->z[playerPositionIndex])
+                positionComponent->x[playerPosIndex],
+                positionComponent->y[playerPosIndex],
+                positionComponent->z[playerPosIndex])
             - QVector3D(0, -10.0f, 0);
     //cameraAt = QVector3D{-7.0f, 0.0f, -5.0f};
     cameraUp = QVector3D{0.0f, 1.0f, 0.0f};
@@ -338,36 +339,36 @@ void RenderWindow::render()
     // and wait for vsync.
     mContext->swapBuffers(this);
 
-    int playerIndex = positionManager->GetComponent(player->Id);
+    int playerPosIndex = positionManager->GetComponent(player->Id);
 
     // Moving player entity
     if (player)
     {
         // Movement in the x-axis
-        positionComponent->dx[playerIndex] = 0.0f;
-        if (controller.moveRight)   positionComponent->dx[playerIndex] += 0.1f;
-        if (controller.moveLeft)    positionComponent->dx[playerIndex] -= 0.1f;
+        positionComponent->dx[playerPosIndex] = 0.0f;
+        if (controller.moveRight)   positionComponent->dx[playerPosIndex] += 0.1f;
+        if (controller.moveLeft)    positionComponent->dx[playerPosIndex] -= 0.1f;
 
         // Movement in the y-axis
-        positionComponent->dy[playerIndex] = 0.0f;
-        if (controller.moveUp)      positionComponent->dy[playerIndex] += 0.1f;
-        if (controller.moveDown)    positionComponent->dy[playerIndex] -= 0.1f;
+        positionComponent->dy[playerPosIndex] = 0.0f;
+        if (controller.moveUp)      positionComponent->dy[playerPosIndex] += 0.1f;
+        if (controller.moveDown)    positionComponent->dy[playerPosIndex] -= 0.1f;
 
         // Movement in the z-axis
-        positionComponent->dz[playerIndex] = 0.0f;
-        if (controller.moveBack)    positionComponent->dz[playerIndex] += 0.1f;
-        if (controller.moveFor)     positionComponent->dz[playerIndex] -= 0.1f;
-
-        cameraEye = QVector3D(
-                    positionComponent->x[playerIndex],
-                    positionComponent->y[playerIndex],
-                    positionComponent->z[playerIndex])
-                + QVector3D(0, 6.0f, 10.0f);
+        positionComponent->dz[playerPosIndex] = 0.0f;
+        if (controller.moveBack)    positionComponent->dz[playerPosIndex] += 0.1f;
+        if (controller.moveFor)     positionComponent->dz[playerPosIndex] -= 0.1f;
 
         renderSystem->Move(player,
-                           positionComponent->dx[playerIndex],
-                           positionComponent->dy[playerIndex],
-                           positionComponent->dz[playerIndex]);
+                           positionComponent->dx[playerPosIndex],
+                           positionComponent->dy[playerPosIndex],
+                           positionComponent->dz[playerPosIndex]);
+
+        cameraEye = QVector3D(
+                    positionComponent->x[playerPosIndex],
+                    positionComponent->y[playerPosIndex],
+                    positionComponent->z[playerPosIndex])
+                + QVector3D(0, 8.0f, 12.0f);
     }
 
     if (lightSwitch)
@@ -381,39 +382,42 @@ void RenderWindow::render()
         specularStrength = 0.0f;
     }
 
-    QVector3D playerPosition = QVector3D(positionComponent->x[playerIndex], positionComponent->y[playerIndex],positionComponent->z[playerIndex]);
+    QVector3D playerPos= QVector3D(positionComponent->x[playerPosIndex], positionComponent->y[playerPosIndex],positionComponent->z[playerPosIndex]);
 
     // Checks for collisions
     for (int i = 1; i < entities.size(); i++) // entities 0 is player, so ignore player
     {
         int enemyPosIndex = damageManager->GetComponent(entities[i]->Id);
         // QVector3D has a working distance function
-        QVector3D enemyPosition = QVector3D(positionComponent->x[enemyPosIndex],
-                                            positionComponent->y[enemyPosIndex],
-                                            positionComponent->z[enemyPosIndex]);
+        QVector3D enemyPos = QVector3D(positionComponent->x[enemyPosIndex],
+                                       positionComponent->y[enemyPosIndex],
+                                       positionComponent->z[enemyPosIndex]);
 
-        float distance = enemyPosition.distanceToPoint(playerPosition);
+        float distance = enemyPos.distanceToPoint(playerPos);
 
         // Checking if this entity contains a Damage Component
         if (damageManager->HasComponent(entities[i]->Id))
         {
+            int playerDmgIndex = damageManager->GetComponent(player->Id);
             // If the entity is close enough & its damage component is no longer on cooldown
             if (distance < 1.0f)
             {
+                int playerHpIndex = healthManager->GetComponent(player->Id);
+
                 if (damageComponent->cooldown[i] < 0.0f)
                 {
                     damageSystem->Damage(entities[i], player, 2.0f);
-                    mLogger->logText("Player Hit! Player health is now " + std::to_string(healthComponent->health[playerIndex]));
+                    mLogger->logText("Player Hit! Player health is now " + std::to_string(healthComponent->health[playerHpIndex]));
                 }
 
-                if (healthComponent->health[playerIndex] <= 0)
+                if (healthComponent->health[playerHpIndex] <= 0)
                 {
                     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
                     qApp->quit();
                 }
             }
 
-            if (controller.attack && damageComponent->cooldown[playerIndex] < 0.0f && distance < 2.0f)
+            if (controller.attack && damageComponent->cooldown[playerDmgIndex] < 0.0f && distance < 2.0f)
             {
                 damageSystem->Damage(player, entities[i], 2.0f);
                 mLogger->logText("Enemy Hit! Enemy health is now " + std::to_string(healthComponent->health[i]));

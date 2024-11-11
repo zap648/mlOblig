@@ -6,17 +6,6 @@
 #include <vector>
 #include "cube.h"
 
-enum class ComponentType // I'm faking reflection due to c++ not letting me :)
-{
-    Position,   // 0 - Position
-    Health,     // 1 - Health
-    Damage,     // 2 - Damage
-    Inventory,  // 3 - Inventory
-    Item,       // 4 - Item
-    Render,     // 5 - Render
-    Controller  // 6 - Controller
-};
-
 struct Component
 {
     int size;
@@ -34,7 +23,7 @@ public:
     std::map<int, int> GetAllComponents() { return components; }
 };
 
-struct PositionComponent : public Component
+struct PositionComponent : Component
 {
     // position axis
     std::vector<float> x;
