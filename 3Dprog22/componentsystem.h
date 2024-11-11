@@ -67,4 +67,36 @@ public:
     }
 };
 
+class DamageSystem : public ComponentSystem
+{
+    HealthComponent* healthComponent;
+    DamageComponent* damageComponent;
+    ComponentManager<HealthComponent>* healthManager;
+    ComponentManager<DamageComponent>* damageManager;
+public:
+    DamageSystem(HealthComponent* healthComponent, DamageComponent* damageComponent, ComponentManager<HealthComponent>* healthManager, ComponentManager<DamageComponent>* damageManager)
+    {
+        this->healthComponent = healthComponent;
+        this->damageComponent = damageComponent;
+        this->healthManager = healthManager;
+        this->damageManager = damageManager;
+    }
+
+    void Damage(const Entity* attacker, const Entity* receiver, float cooldown)
+    {
+        int attackerIndex = damageManager->GetComponent(attacker->Id);
+        int receiverIndex = healthManager->GetComponent(receiver->Id);
+        healthComponent->health[receiverIndex] -= damageComponent->damage[attackerIndex];
+        damageComponent->cooldown[attackerIndex] = cooldown;
+    }
+
+    void Update(float deltaTime)
+    {
+        for (int i = 0; i < damageComponent->size; i++)
+        {
+            damageComponent->cooldown[i] -= deltaTime;
+        }
+    }
+};
+
 #endif // COMPONENTSYSTEM_H

@@ -75,12 +75,29 @@ struct RenderComponent : Component
 struct HealthComponent : Component
 {
     std::vector<int> health;
+
+    void init()
+    {
+        for (int i = 0; i < size; i++)
+        {
+            health.push_back(10);
+        }
+    }
 };
 
 struct DamageComponent : Component
 {
     std::vector<int> damage;
     std::vector<float> cooldown;
+
+    void init()
+    {
+        for (int i = 0; i < size; i++)
+        {
+            damage.push_back(1);
+            cooldown.push_back(2.0f);
+        }
+    }
 };
 
 struct ItemComponent : Component

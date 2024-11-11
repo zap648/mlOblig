@@ -71,17 +71,19 @@ private:
     // Components
     PositionComponent* positionComponent;
     RenderComponent* renderComponent;
-//    HealthComponent* healthComponent;
-//    DamageComponent* damageComponent;
+    HealthComponent* healthComponent;
+    DamageComponent* damageComponent;
 //    ItemComponent* itemComponent;
 //    InventoryComponent* inventoryComponent;
 //    ControllerComponent* controllerComponent;
     ComponentManager<PositionComponent>* positionManager;
     ComponentManager<RenderComponent>* renderManager;
+    ComponentManager<HealthComponent>* healthManager;
+    ComponentManager<DamageComponent>* damageManager;
     // Systems
     MovementSystem* movementSystem;
     RenderSystem* renderSystem;
-//    DamageSystem* damageSystem;
+    DamageSystem* damageSystem;
 //    InventorySystem* inventorySystem;
 
     Plane* plane;
