@@ -22,6 +22,7 @@ SOURCES += main.cpp \
     logger.cpp \
     mainwindow.cpp \
     octaball.cpp \
+    particlesystem.cpp \
     physicsobject.cpp \
     plane.cpp \
     point.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     logger.h \
     mainwindow.h \
     octaball.h \
+    particlesystem.h \
     physicsobject.h \
     plane.h \
     point.h \

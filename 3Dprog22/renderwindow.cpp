@@ -268,7 +268,8 @@ void RenderWindow::render()
 
     // ECS updates
     movementSystem->Update();
-    damageSystem->Update((float)(mTimeStart.elapsed()) / 1000 /* milliseconds to seconds*/);
+    damageSystem->Update(static_cast<float>(mTimeStart.elapsed()) / 1000 /* milliseconds to seconds*/);
+    particleSystem.update(static_cast<float>(mTimeStart.elapsed()) / 1000);
 
     light->mLightStrength = lightStrength;
     light->mSpecularStrength = specularStrength;
@@ -280,6 +281,13 @@ void RenderWindow::render()
     mContext->makeCurrent(this); //must be called every frame (every time mContext->swapBuffers is called)
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
+
+    particleSystem.create(rand() % 10, 20, rand() % 10);
+    for (int i = 0; i < particleSystem.size; i++)
+    {
+
+    }
+    mLogger->logText(std::to_string(particleSystem.size));
 
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

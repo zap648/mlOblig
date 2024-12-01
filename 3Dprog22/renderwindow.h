@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "camera.h";
+#include "particlesystem.h"
 #include "component.h"
 #include "componentsystem.h"
 #include "cube.h"
@@ -85,6 +86,8 @@ private:
     RenderSystem* renderSystem;
     DamageSystem* damageSystem;
 //    InventorySystem* inventorySystem;
+
+    ParticleSystem particleSystem;
 
     Plane* plane;
     Cube* cube;
