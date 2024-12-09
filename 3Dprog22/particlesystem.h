@@ -2,7 +2,7 @@
 #define PARTICLESYSTEM_H
 
 #include <cstdlib>
-const int maxParticles = 1000;
+const int maxParticles = 5000;
 
 class ParticleSystem
 {
@@ -14,10 +14,10 @@ public:
 
     void create(float px, float py, float pz) {
         if (size < maxParticles) {
-            float speed = static_cast<float>(rand() % 50 + 50) / 10.0f;
-            x[size] = px; y[size] = py; x[size] = pz; // Position
-            vx[size] = speed; vy[size] = speed; vz[size] = speed;  // Velocity
-            lifetime[size] = 10.0f; // Lifetime
+            float speed = -5;   // speed
+            x[size] = px; y[size] = py; z[size] = pz; // Position
+            vx[size] = 0.0f; vy[size] = speed; vz[size] = 0.0f;  // Velocity
+            lifetime[size] = 4.0f; // Lifetime
             size++;
         }
     }
@@ -31,17 +31,22 @@ public:
 
             // Remove dead particles by swapping with the last particle
             if (lifetime[i] <= 0) {
-                --size;
-                if (i != size) { // Only swap if not the last particle
-                    x[i] = x[size];
-                    y[i] = y[size];
-                    z[i] = y[size];
-                    vx[i] = vx[size];
-                    vy[i] = vy[size];
-                    vz[i] = vz[size];
-                    lifetime[i] = lifetime[size];
-                }
+                destroy(i);
             }
+        }
+    }
+
+    void destroy(int i)
+    {
+        --size;
+        if (i != size) { // Only swap if this isn't the last particle
+            x[i] = x[size];
+            y[i] = y[size];
+            z[i] = z[size];
+            vx[i] = vx[size];
+            vy[i] = vy[size];
+            vz[i] = vz[size];
+            lifetime[i] = lifetime[size];
         }
     }
 };

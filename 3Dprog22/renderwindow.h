@@ -61,6 +61,7 @@ private:
     std::vector<VisualObject*> mTrophies;
     std::vector<VisualObject*> mEnemies;
     std::vector<PhysicsObject*> mPhysics;
+    std::vector<VisualObject*> mParticles;
     VisualObject* mio;      //member interactive object
 
     // Entity Component System

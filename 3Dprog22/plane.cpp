@@ -60,10 +60,10 @@ Plane::Plane(QVector2D s, QQuaternion r) : mx{0.0f}, my{0.0f}, mz{0.0f}
 Plane::Plane(QVector3D V0, QVector3D V1, QVector3D V2, QVector3D V3)
 {
     //     v     x       y       z     r     g     b     u     v
-    Vertex v0{V0.x(), V0.y(), V0.z(), 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
-    Vertex v1{V1.x(), V1.y(), V1.z(), 0.0f, 1.0f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
-    Vertex v2{V2.x(), V2.y(), V2.z(), 0.0f, 1.0f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
-    Vertex v3{V3.x(), V3.y(), V3.z(), 0.0f, 1.0f, 1.0f, 0.0f, 0.0f};    // Bottom-left vertex
+    Vertex v0{V0.x(), V0.y(), V0.z(), 0.0f, 0.6f, 0.0f, 0.0f, 1.0f};    // Top-left vertex
+    Vertex v1{V1.x(), V1.y(), V1.z(), 0.0f, 0.6f, 0.0f, 1.0f, 1.0f};    // Top-right vertex
+    Vertex v2{V2.x(), V2.y(), V2.z(), 0.0f, 0.6f, 0.0f, 1.0f, 0.0f};    // Bottom-right vertex
+    Vertex v3{V3.x(), V3.y(), V3.z(), 0.0f, 0.6f, 0.0f, 0.0f, 0.0f};    // Bottom-left vertex
 
     mVertices.insert(mVertices.end(),
                      {

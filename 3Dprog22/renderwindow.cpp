@@ -70,6 +70,12 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     specularStrength = light->mSpecularStrength;
     mObjects.push_back(light);
 
+    // Setting up Rain Particles
+    for (int i = 0; i < maxParticles; i++)
+    {
+        mParticles.push_back(new Cube(0.05f, 0.05f, 0.05f, 0.0f, 0.6f, 0.6f));
+    }
+
     // Setting up ECS
 
     // Setting up Entities
@@ -122,8 +128,8 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     positionComponent->x[enemyPosIndex] = 4.5f;
 
     // Give custom renders
-    renderComponent->render[playerRenIndex] = new Cube(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
-    renderComponent->render[enemyRenIndex] = new Cube(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f);
+    renderComponent->render[playerRenIndex] = new Cube(0.5f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f);
+    renderComponent->render[enemyRenIndex] = new Cube(0.5f, 1.0f, 0.5f, 1.0f, 0.0f, 0.0f);
 
     renderSystem->Move(enemy, positionComponent->x[enemyPosIndex], positionComponent->y[enemyPosIndex], positionComponent->z[enemyPosIndex]);
 
@@ -132,7 +138,7 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
                 positionComponent->x[playerPosIndex],
                 positionComponent->y[playerPosIndex],
                 positionComponent->z[playerPosIndex])
-            + QVector3D(0, 8.0f, 12.0f);
+            + QVector3D(0, 3.0f, 6.0f);
     //cameraEye = QVector3D{-7.0f, 2.5f, 6.0f};
     cameraAt = QVector3D(
                 positionComponent->x[playerPosIndex],
@@ -232,6 +238,8 @@ void RenderWindow::init()
     light->init();
     plane->init();
     renderSystem->Init();
+    for (int i = 0; i < mParticles.size(); i++)
+        mParticles[i]->init();
 }
 
 // Called each frame - doing the rendering!!!
@@ -282,12 +290,12 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    particleSystem.create(rand() % 10, 20, rand() % 10);
-    for (int i = 0; i < particleSystem.size; i++)
-    {
-
-    }
-    mLogger->logText(std::to_string(particleSystem.size));
+    for (int i = 0; i < 1; i++)
+        particleSystem.create(
+                    static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5,
+                    19.5,
+                    static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5);
+//    mLogger->logText(std::to_string(particleSystem.size));
 
     //clear the screen for each redraw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -302,6 +310,11 @@ void RenderWindow::render()
     light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
     plane->draw(mMatrixUniform0);   // but the light object is too depended on by the program, haha...
     renderSystem->Update(mMatrixUniform0);
+    for (int i = 0; i < particleSystem.size; i++)
+    {
+        mParticles[i]->setPosition3D(QVector3D(particleSystem.x[i], particleSystem.y[i], particleSystem.z[i]));
+        mParticles[i]->draw(mMatrixUniform0);
+    }
 
     // Draws all objects using phong shading
     // What shader to use (texture & phong shader)
@@ -376,7 +389,7 @@ void RenderWindow::render()
                     positionComponent->x[playerPosIndex],
                     positionComponent->y[playerPosIndex],
                     positionComponent->z[playerPosIndex])
-                + QVector3D(0, 8.0f, 12.0f);
+                + QVector3D(0, 3.0f, 6.0f);
     }
 
     if (lightSwitch)
