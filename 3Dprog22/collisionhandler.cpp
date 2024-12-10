@@ -64,7 +64,7 @@ void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
     }
     else
     {
-        // pObjects er ikke større en 1
+        // pObjects is not bigger than 1
     }
 }
 
@@ -72,8 +72,8 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
 {
 //    mLogger->logText("Collision!");
 
-    // objektspesifike sprett (ball (1) or wall (0))
-    // viss et objekt er ball (1) og den andre er en vegg (0)
+    // object specific bounce (ball (1) or wall (0))
+    // if one object is a ball (1) and the other is a wall (0)
     if ((object1->type() != object2->type()))
     {
         if (object1->type() == 0 && object2->type() == 1)
@@ -85,7 +85,7 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
             BallWallCollision((OctaBall *) object1, (Plane *) object2);
         }
     }
-    // viss begge objekta er baller (1)
+    // if both object are balls (1)
     else if ((object1->type() == 1 && object2->type() == 1))
     {
         BallBallCollision((OctaBall *) object1, (OctaBall *) object2);
@@ -94,19 +94,19 @@ void CollisionHandler::Collide(PhysicsObject* object1, PhysicsObject* object2)
 
 void CollisionHandler::BallWallCollision(OctaBall* ball, Plane* wall)
 {
-    // Spretter ballen vekk fra ballen på samme måte som lys reflekteres fra speil
-    // Grader på inngangsvektoren blir reversert til å bli speilvendt i forhold til normalen
+    // bounces the ball from the wall similar to light reflected from a mirror
+    // Degrees on the collision vector gets reversered to be mirrored in comparisson to the normal
     ball->setVelocity(-2 * QVector3D().dotProduct(wall->getNormal(), ball->getVelocity()) * wall->getNormal() + ball->getVelocity());
 
-    // Regner ut avstanden fra ballen til det nærmeste punktet på planet
+    // Calculates the distance from the ball to the closest point on the plane
     float distance = wall->distanceFromPoint(ball->getPosition());
-    // Dytter ballen ut fra veggen like mye som han gikk inn i veggen
+    // Push the ball out from the wall by the distance it went in to the wall
     ball->move(wall->getNormal() * (distance - ball->getRadius()));
 }
 
 void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
 {
-    // Finn kollisjonspunktet
+    // Find the collision point
     QVector3D p1 = ball0->getPosition(); // ball0 current pos
     QVector3D vp = ball0->getVelocity(); // ball0 current speedVector
     QVector3D p0 = p1 - vp;              // ball0 previous pos (last frame)
@@ -119,35 +119,10 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     QVector3D A = p1 - q1;
     QVector3D B = vp - vq;
 
-    // Gammel, frustrerende formel
-//    float rp = ball0->getRadius();
-//    float rq = ball1->getRadius();
-////    float t = -( QVector3D().dotProduct(A, B) )
-////            - std::sqrt( std::pow(QVector3D().dotProduct(A, B), 2)
-////                         - QVector3D().dotProduct(B, B) * ( QVector3D().dotProduct(A, A)
-////                                                            - std::pow( (rp + rq), 2) ) )
-////            / QVector3D().dotProduct(B, B); // t = -A^2 - sqrt( AB^2 - B^2 * (A^2 * d^2)) / B^2
-//    float t = -QVector3D().dotProduct(A, B) / QVector3D().dotProduct(B, B);
-//    QVector3D Pt = p0 + (t * vp);
-//    QVector3D Qt = q0 + (t * vq);
-
-//    QVector3D d = Qt - Pt;
-//    QVector3D N = d.normalized();
-
-//    QVector3D v0 = ( (mp - mq) / (mp + mq) ) * vp;
-//    v0 += 2 * mq / (mp + mq) * vq;
-//    QVector3D v1 = ( (mq - mp) / (mp + mq) ) * vq;
-//    v1 += 2 * mp / (mp + mq) * vp;
-
-//    ball0->setVelocity(v0*N + v0*d);
-//    ball1->setVelocity(v1*N - v0*d);
-//    ball0->setVelocity(-2 * QVector3D().dotProduct(N, vp) * N + vp); // Men vegg-sprettefunksjonen "fungerer" (med noen få avvik i spretteretning)
-//    ball1->setVelocity(-2 * QVector3D().dotProduct(N, vq) * N + vq);
-
-    // Ny, enklere formel
+    // Collision calculation
     float dist = A.length();
 
-    // Viss ballene allerede drar fra hverandre, bryt av funksjonen
+    // If the balls are departing from each other, cancel the function
     if (dist > (p0 - q0).length())
         return;
 
@@ -155,27 +130,27 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     float mSum = mp + mq;
     QVector3D vDiff = vq - vp;
 
-    // Dytter ballene fra hverandre
+    // Push the balls from one another
     float overlap = dist - (ball0->getRadius() + ball1->getRadius());
     QVector3D dir = impactVector;
     dir = dir.normalized() * (overlap / 2);
     ball0->move(dir);
     ball1->move(-dir);
 
-    // Fiks distansen
+    // Fix the distance
     dist = A.length();
     impactVector = impactVector.normalized() * dist;
 
-    // Regn ut felles for begge formlene
+    // The common between the formulas
     float num = QVector3D().dotProduct(impactVector, vDiff);
     float den = mSum * dist * dist;
 
-    // Finn fart til ball0
+    // Find velocity of ball0
     QVector3D deltaVA = impactVector;
     deltaVA *= 2 * mq * num / den;
     ball0->setVelocity(ball0->getVelocity() + deltaVA);
 
-    // Finn fart til ball1
+    // Find velocity of ball1
     QVector3D deltaVB = impactVector;
     deltaVB *= -2 * mp * num / den;
     ball1->setVelocity(ball1->getVelocity() + deltaVB);

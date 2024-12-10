@@ -290,7 +290,7 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 2; i++)
         particleSystem.create(
                     static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5,
                     19.5,
