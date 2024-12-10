@@ -25,6 +25,7 @@ public:
     void addWall(Plane* wall);
 
 //    void DetectBallWallCollision();
+    float GetDistance(PhysicsObject* obj0, PhysicsObject* obj1);
     void DetectCollision(std::vector<PhysicsObject*> pObjects);
     void Collide(PhysicsObject* object1, PhysicsObject* object2);
     void BallWallCollision(OctaBall* ball, Plane* wall);

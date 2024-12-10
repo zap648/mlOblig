@@ -21,6 +21,20 @@ void CollisionHandler::addWall(Plane* wall)
     walls.push_back(wall);
 }
 
+float CollisionHandler::GetDistance(PhysicsObject* obj0, PhysicsObject* obj1)
+{
+    if (obj0->type() != obj1->type())
+    {
+        if (obj1->type() == 0) // if the obj is wall
+            return ((Plane *) obj1)->distanceFromPoint(obj0->getPosition());
+        else // if the other obj is wall
+            return ((Plane *) obj0)->distanceFromPoint(obj1->getPosition());
+    }
+    else // if the pObjects are equal (only both being balls matter)
+        return obj0->getPosition().distanceToPoint(obj1->getPosition());
+    // mLogger->logText(std::to_string(distance));
+}
+
 void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
 {
     if (pObjects.size() > 1)
@@ -39,17 +53,7 @@ void CollisionHandler::DetectCollision(std::vector<PhysicsObject*> pObjects)
                 {
                     continue;
                 }
-                float distance = 0;
-                if (pObjects[i]->type() != pObjects[j]->type())
-                {
-                    if (pObjects[j]->type() == 0) // if the pObjects is wall
-                        distance = ((Plane *) pObjects[j])->distanceFromPoint(pObjects[i]->getPosition());
-                    else // if the other pObjects is wall
-                        distance = ((Plane *) pObjects[i])->distanceFromPoint(pObjects[j]->getPosition());
-                }
-                else // if the pObjects are equal (only both being balls matter)
-                    distance = pObjects[i]->getPosition().distanceToPoint(pObjects[j]->getPosition());
-                // mLogger->logText(std::to_string(distance));
+                float distance = GetDistance(pObjects[i], pObjects[j]);
 
                 if (distance <= pObjects[i]->getRadius() + pObjects[j]->getRadius())
                 {
@@ -142,12 +146,28 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
 
     // Ny, enklere formel
     float dist = A.length();
+
+    // Viss ballene allerede drar fra hverandre, bryt av funksjonen
+    if (dist > (p0 - q0).length())
+        return;
+
     QVector3D impactVector = p1 - q1;
     float mSum = mp + mq;
     QVector3D vDiff = vq - vp;
 
+    // Dytter ballene fra hverandre
+    float overlap = dist - (ball0->getRadius() + ball1->getRadius());
+    QVector3D dir = impactVector;
+    dir = dir.normalized() * (overlap / 2);
+    ball0->move(dir);
+    ball1->move(-dir);
+
+    // Fiks distansen
+    dist = A.length();
+    impactVector = impactVector.normalized() * dist;
+
     // Regn ut felles for begge formlene
-    float num = QVector3D().dotProduct(vDiff, impactVector);
+    float num = QVector3D().dotProduct(impactVector, vDiff);
     float den = mSum * dist * dist;
 
     // Finn fart til ball0
@@ -159,12 +179,6 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     QVector3D deltaVB = impactVector;
     deltaVB *= -2 * mp * num / den;
     ball1->setVelocity(ball1->getVelocity() + deltaVB);
-
-//    // Så flytter jeg ballen frå hverandre
-//    // (enkel metode, slik at de ikke like ofte setter seg fast i hverandre)
-//    // Vil gi en liten endring i potensiell energi pga fast akselerasjon
-//    ball0->move(ball0->getVelocity());
-//    ball1->move(ball1->getVelocity());
 }
 
 int CollisionHandler::type()
