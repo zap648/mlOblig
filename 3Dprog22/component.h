@@ -33,6 +33,10 @@ struct PositionComponent : Component
     std::vector<float> dx;
     std::vector<float> dy;
     std::vector<float> dz;
+    // acceleration axis
+    std::vector<float> ax;
+    std::vector<float> ay;
+    std::vector<float> az;
 
     PositionComponent() { size = 0; }
 
@@ -42,6 +46,7 @@ struct PositionComponent : Component
         {
             x.push_back(0.0f); y.push_back(0.0f); z.push_back(0.0f);    // Position coordinates
             dx.push_back(0.0f); dy.push_back(0.0f); dz.push_back(0.0f); // Direction coordinates
+            ax.push_back(0.0f); ay.push_back(0.0f); az.push_back(0.0f); // Acceleration coordinates
         }
     }
 };
@@ -58,6 +63,18 @@ struct RenderComponent : Component
         {
             render.push_back(new Cube(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f));
         }
+    }
+};
+
+struct PhysicsComponent : Component
+{
+    std::vector<bool> b_physics;
+
+    PhysicsComponent() { size = 0; }
+
+    void init()
+    {
+
     }
 };
 

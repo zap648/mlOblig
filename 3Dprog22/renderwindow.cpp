@@ -59,7 +59,6 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
 
     // Adding Plane Object to mObject
     plane = new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f));
-    plane->move(0.0f, -0.5f, 0.0f);
     mObjects.push_back(plane);
 //    mPhysics.push_back(plane.back());
 
@@ -125,12 +124,14 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     int enemyRenIndex = renderManager->GetComponent(enemy->Id);
 
     // Custom starting position
-    positionComponent->x[enemyPosIndex] = 4.5f;
+    positionComponent->y[playerPosIndex] = 0.5f;
+    positionComponent->x[enemyPosIndex] = 4.5f; positionComponent->y[enemyPosIndex] = 0.5f;
 
     // Give custom renders
     renderComponent->render[playerRenIndex] = new Cube(0.5f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f);
     renderComponent->render[enemyRenIndex] = new Cube(0.5f, 1.0f, 0.5f, 1.0f, 0.0f, 0.0f);
 
+    renderSystem->Move(player, positionComponent->x[playerPosIndex], positionComponent->y[playerPosIndex], positionComponent->z[playerPosIndex]);
     renderSystem->Move(enemy, positionComponent->x[enemyPosIndex], positionComponent->y[enemyPosIndex], positionComponent->z[enemyPosIndex]);
 
     // Setting up the camera
@@ -293,7 +294,7 @@ void RenderWindow::render()
     for (int i = 0; i < 2; i++)
         particleSystem.create(
                     static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5,
-                    19.5,
+                    15.0f,
                     static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5);
 //    mLogger->logText(std::to_string(particleSystem.size));
 
@@ -305,7 +306,7 @@ void RenderWindow::render()
     glUseProgram(mShaderProgram[0]->getProgram());
     //send data to shaders
     mCamera.update(mPmatrixUniform0, mVmatrixUniform0);
-
+//    mLogger->logText(std::to_string(positionComponent->y[positionManager->GetComponent(player->Id)]));
     //the actual draw call(s)
     light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
     plane->draw(mMatrixUniform0);   // but the light object is too depended on by the program, haha...

@@ -26,8 +26,13 @@ public:
         for (int i = 0; i < size; i++) {
             x[i] += vx[i] * dt;
             y[i] += vy[i] * dt;
-            y[i] += vz[i] * dt;
+            z[i] += vz[i] * dt;
             lifetime[i] -= dt;
+
+            if (y[i] < 0.0f) // When raindrops reach the "floor"
+            {
+                y[i] = 0.0f; vy[i] = 0.0f;
+            }
 
             // Remove dead particles by swapping with the last particle
             if (lifetime[i] <= 0) {

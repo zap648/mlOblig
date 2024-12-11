@@ -26,6 +26,10 @@ public:
     {
         for (int i = 0; i < positionComponent->size; i++)
         {
+            positionComponent->dx[i] += positionComponent->ax[i];
+            positionComponent->dy[i] += positionComponent->ay[i];
+            positionComponent->dz[i] += positionComponent->az[i];
+
             positionComponent->x[i] += positionComponent->dx[i];
             positionComponent->y[i] += positionComponent->dy[i];
             positionComponent->z[i] += positionComponent->dz[i];
@@ -97,6 +101,69 @@ public:
             damageComponent->cooldown[i] -= deltaTime;
         }
     }
+};
+
+class CollisionSystem : public ComponentSystem
+{
+    PositionComponent* positionComponent;
+    PhysicsComponent* physicsComponent;
+    ComponentManager<PositionComponent>* positionManager;
+    ComponentManager<PhysicsComponent>* physicsManager;
+public:
+    CollisionSystem(PositionComponent* positionComponent, PhysicsComponent* physicsComponent, ComponentManager<PositionComponent>* positionManager, ComponentManager<PhysicsComponent>* physicsManager)
+    {
+        this->positionComponent = positionComponent;
+        this->physicsComponent = physicsComponent;
+        this->positionManager = positionManager;
+        this->physicsManager = physicsManager;
+    }
+
+//    void Update()
+//    {
+//        if (pObjects.size() > 1)
+//        {
+//            std::vector<std::vector<int>> tracker;
+//            // assume the radius is 1
+//            for (int i = 0; pObjects.size() > i; i++)
+//            {
+//                tracker.push_back(*new std::vector<int>());
+//                for (int j = 0; j <= i; j++)
+//                    tracker[i].push_back(j);
+
+//                for (int j = 0; pObjects.size() > j; j++)
+//                {
+//                    if (std::find(tracker[i].begin(), tracker[i].end(), j) != tracker[i].end())
+//                    {
+//                        continue;
+//                    }
+//                    float distance = GetDistance(pObjects[i], pObjects[j]);
+
+//                    if (distance <= pObjects[i]->getRadius() + pObjects[j]->getRadius())
+//                    {
+//                        Collide(pObjects[i], pObjects[j]);
+//                    }
+//                }
+//            }
+//        }
+//        else
+//        {
+//            // pObjects is not bigger than 1
+//        }
+//    }
+
+//    void GetDistance()
+//    {
+//        if (obj0->type() != obj1->type())
+//        {
+//            if (obj1->type() == 0) // if the obj is wall
+//                return ((Plane *) obj1)->distanceFromPoint(obj0->getPosition());
+//            else // if the other obj is wall
+//                return ((Plane *) obj0)->distanceFromPoint(obj1->getPosition());
+//        }
+//        else // if the pObjects are equal (only both being balls matter)
+//            return obj0->getPosition().distanceToPoint(obj1->getPosition());
+//        // mLogger->logText(std::to_string(distance));
+//    }
 };
 
 #endif // COMPONENTSYSTEM_H
