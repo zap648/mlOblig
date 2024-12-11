@@ -1,23 +1,21 @@
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
 
-#include <cstdlib>
 const int maxParticles = 5000;
 
-class ParticleSystem
+struct ParticleSystem
 {
-public:    
-    float x[maxParticles], y[maxParticles], z[maxParticles]; // Position
+    float x[maxParticles], y[maxParticles], z[maxParticles];    // Position
     float vx[maxParticles], vy[maxParticles], vz[maxParticles]; // Velocity
-    float lifetime[maxParticles]; // Lifetime in seconds
+    float lifetime[maxParticles];                               // Lifetime in seconds
     int size = 0;
 
     void create(float px, float py, float pz) {
         if (size < maxParticles) {
-            float speed = -5;   // speed
-            x[size] = px; y[size] = py; z[size] = pz; // Position
-            vx[size] = 0.0f; vy[size] = speed; vz[size] = 0.0f;  // Velocity
-            lifetime[size] = 4.0f; // Lifetime
+            float speed = 5;                                    // speed
+            x[size] = px; y[size] = py; z[size] = pz;           // Position
+            vx[size] = 0.0f; vy[size] = -speed; vz[size] = 0.0f;// Velocity
+            lifetime[size] = 4.0f;                              // Lifetime
             size++;
         }
     }

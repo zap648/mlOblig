@@ -11,16 +11,6 @@ CollisionHandler::~CollisionHandler()
 
 }
 
-void CollisionHandler::addBall(OctaBall* ball)
-{
-    balls.push_back(ball);
-}
-
-void CollisionHandler::addWall(Plane* wall)
-{
-    walls.push_back(wall);
-}
-
 float CollisionHandler::GetDistance(PhysicsObject* obj0, PhysicsObject* obj1)
 {
     if (obj0->type() != obj1->type())
@@ -117,7 +107,7 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     float mq = ball1->getMass();         // ball1 mass
 
     QVector3D A = p1 - q1;
-    QVector3D B = vp - vq;
+    QVector3D B = vq - vp;
 
     // Collision calculation
     float dist = A.length();
@@ -128,7 +118,6 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
 
     QVector3D impactVector = p1 - q1;
     float mSum = mp + mq;
-    QVector3D vDiff = vq - vp;
 
     // Push the balls from one another
     float overlap = dist - (ball0->getRadius() + ball1->getRadius());
@@ -142,7 +131,7 @@ void CollisionHandler::BallBallCollision(OctaBall* ball0, OctaBall* ball1)
     impactVector = impactVector.normalized() * dist;
 
     // The common between the formulas
-    float num = QVector3D().dotProduct(impactVector, vDiff);
+    float num = QVector3D().dotProduct(impactVector, B);
     float den = mSum * dist * dist;
 
     // Find velocity of ball0

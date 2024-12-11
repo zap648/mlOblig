@@ -161,9 +161,6 @@ QVector3D Plane::getNormal()
 
 float Plane::distanceFromPoint(QVector3D point)
 {
-    // Check if ball is within wall parameters
-
-
     // Find distance from ball to (an infinite version of) wall
     float distance = QVector3D().dotProduct(getNormal(), (getPosition() - point));
 

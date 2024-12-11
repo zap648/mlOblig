@@ -57,10 +57,48 @@ RenderWindow::RenderWindow(const QSurfaceFormat &format, MainWindow *mainWindow)
     //Make the gameloop timer:
     mRenderTimer = new QTimer(this);
 
+//    // Setting up physics (needs fixing)
+//    // OctaBall Object
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-0.5f, 0.0f,3.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
+
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-1.0f, 0.0f,2.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
+
+//    ball = new OctaBall(3, 0.5f);
+//    ball->move(-4.0f, 0.0f,4.0f);
+//    mObjects.push_back(ball);
+//    mPhysics.push_back(ball);
+
+//    // Adding Plane Object to mObject
+//    plane = new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f));
+//    plane->move(0.0f, -0.5f, 0.0f);
+//    mObjects.push_back(plane);
+//    mPhysics.push_back(plane);
+//    plane = new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f));
+//    plane->move(0.0f, 0.0f, 5.0f);
+//    mObjects.push_back(plane);
+//    mPhysics.push_back(plane);
+//    plane = new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f, 0.5f, 5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f,-0.5f,-5.0f));
+//    plane->move(5.0f, 0.0f, 0.0f);
+//    mObjects.push_back(plane);
+//    mPhysics.push_back(plane);
+//    plane = new Plane(QVector3D(-5.0f, 0.5f, 0.0f), QVector3D( 5.0f, 0.5f, 0.0f), QVector3D( 5.0f,-0.5f, 0.0f), QVector3D(-5.0f,-0.5f, 0.0f));
+//    plane->move(0.0f, 0.0f, 5.0f);
+//    mObjects.push_back(plane);
+//    mPhysics.push_back(plane);
+//    plane = new Plane(QVector3D( 0.0f, 0.5f,-5.0f), QVector3D( 0.0f,-0.5f,-5.0f), QVector3D( 0.0f,-0.5f, 5.0f), QVector3D(0.0f, 0.5f, 5.0f));
+//    plane->move(-5.0f, 0.0f, 0.0f);
+//    mObjects.push_back(plane);
+//    mPhysics.push_back(plane);
+
     // Adding Plane Object to mObject
     plane = new Plane(QVector3D(-5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f,-5.0f), QVector3D( 5.0f, 0.0f, 5.0f), QVector3D(-5.0f, 0.0f, 5.0f));
     mObjects.push_back(plane);
-//    mPhysics.push_back(plane.back());
 
     // Setting up Light Object and adding it to mObject
     light = new Light;
@@ -236,9 +274,9 @@ void RenderWindow::init()
 
     glBindVertexArray(0);
 
-    light->init();
-    plane->init();
     renderSystem->Init();
+    for (int i = 0; i < mObjects.size(); i++)
+        mObjects[i]->init();
     for (int i = 0; i < mParticles.size(); i++)
         mParticles[i]->init();
 }
@@ -291,7 +329,7 @@ void RenderWindow::render()
 
     initializeOpenGLFunctions();    //must call this every frame it seems...
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 4; i++)
         particleSystem.create(
                     static_cast<float>(rand() * 10) / static_cast <float> (RAND_MAX) - 5,
                     15.0f,
@@ -310,6 +348,10 @@ void RenderWindow::render()
     //the actual draw call(s)
     light->draw(mMatrixUniform0);   // I could *technically* componentize these objects...
     plane->draw(mMatrixUniform0);   // but the light object is too depended on by the program, haha...
+    for (int i = 0; i < mPhysics.size(); i++)
+    {
+        mPhysics[i]->draw(mMatrixUniform0);
+    }
     renderSystem->Update(mMatrixUniform0);
     for (int i = 0; i < particleSystem.size; i++)
     {
